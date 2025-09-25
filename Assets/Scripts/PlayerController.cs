@@ -31,6 +31,7 @@ namespace DefaultNamespace
             public float KnockbackTimer;
             public float CoyoteTimer;
             public float Health;
+            public int JumpsUsed;
             public PredictionRigidbody2D Rigidbody;
             
             public uint GetTick() => _tick;
@@ -48,10 +49,13 @@ namespace DefaultNamespace
         [SerializeField] private LayerMask _groundMask;
         [SerializeField] private Image _hpBarImage;
         [SerializeField] private Rigidbody2D _rigidbody;
+        [SerializeField] private int _maxAirJumps = 1;
         
         [Header("Debug")]
         [SerializeField] private bool _canMove;
         [SerializeField] private GameState _state;
+        
+        private int _jumpsUsed;
 
         private bool IsGrounded => Physics2D.Raycast(transform.position, Vector2.down,
             _groundCheckDistance, _groundMask);
@@ -204,17 +208,34 @@ namespace DefaultNamespace
                     _predictionRigidbody.Velocity(velocity);
                 }
 
-                if (input.Jump && (IsGrounded || _coyoteTimer > 0f))
-                    Jump();
+                if (input.Jump)
+                {
+                    bool canGroundJump = IsGrounded || _coyoteTimer > 0f;
+                    if (canGroundJump)
+                    {
+                        Jump();
+                        _jumpsUsed = 0;
+                    }
+                    else if (_jumpsUsed < _maxAirJumps)
+                    {
+                        Jump();
+                        _jumpsUsed++;
+                    }
+                }
             }
 
             _canMove = CanMove();
             _state = RaceManager.Instance.CurrentState;
 
             if (IsGrounded)
+            {
                 _coyoteTimer = _coyoteTime;
+                _jumpsUsed = 0;
+            }
             else
+            {
                 _coyoteTimer -= (float)TimeManager.TickDelta;
+            }
             
             _predictionRigidbody.AddForce(Physics.gravity);
             _predictionRigidbody.Simulate();
@@ -232,6 +253,7 @@ namespace DefaultNamespace
                 Rigidbody = _predictionRigidbody,
                 KnockbackTimer = _knockbackTimer,
                 CoyoteTimer = _coyoteTimer,
+                JumpsUsed = _jumpsUsed,
                 Health = _health
             };
             ReconcileState(state);
@@ -243,6 +265,7 @@ namespace DefaultNamespace
             _knockbackTimer = state.KnockbackTimer;
             _health = state.Health;
             _coyoteTimer = state.CoyoteTimer;
+            _jumpsUsed = state.JumpsUsed;
             _predictionRigidbody.Reconcile(state.Rigidbody);
         }
         
