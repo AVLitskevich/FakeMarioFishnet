@@ -19,8 +19,6 @@ namespace DefaultNamespace
     
     public class RaceManager : NetworkBehaviour
     {
-        public static RaceManager Instance { get; private set; }
-
         public event Action OnStateChanged;
         
         [SerializeField] private float _countDownTime = 3f;
@@ -34,11 +32,6 @@ namespace DefaultNamespace
         private readonly List<NetworkConnection> _finishedPlayers = new();
 
         public GameState CurrentState => _state.Value;
-
-        private void Awake()
-        {
-            Instance = this;
-        }
 
         private void Update()
         {

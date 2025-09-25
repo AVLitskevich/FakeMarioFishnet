@@ -1,39 +1,24 @@
 ﻿using System.Collections.Generic;
 using FishNet.Managing;
-using FishNet.Object;
-using FishNet.Object.Synchronizing;
-using TMPro;
+using FishNet.Transporting.UTP;
 using UnityEngine;
-using UnityEngine.UI;
+using VContainer;
+using VContainer.Unity;
 
 namespace DefaultNamespace
 {
-    public class LayerProvider : NetworkBehaviour
+    public class LayerProvider : IInitializable
     {
-        public readonly SyncVar<bool> CollisionsState = new SyncVar<bool>(new SyncTypeSettings(writePermissions: WritePermission.ServerOnly));
-        
-        public static LayerProvider Instance;
-
-        [SerializeField] private bool _defaultCollisionsState;
-        [SerializeField] private int _layerCount;
-        [SerializeField] private NetworkManager _networkManager;
-        [SerializeField] private Button _toggleCollisionsButton;
-        [SerializeField] private TMP_Text _collisionsStateText;
+        [Inject] private readonly NetworkManager _networkManager;
 
         private Stack<int> _availableLayerMasks;
 
-        [ServerRpc(RequireOwnership = false)]
-        private void RequestToggleCollisions()
+        public void Initialize()
         {
-            CollisionsState.Value = !CollisionsState.Value;
-        }
-        
-        private void Awake()
-        {
-            Instance = this;
+            var maxClients = _networkManager.TransportManager.GetTransport<UnityTransport>().GetMaximumClients();
             
             _availableLayerMasks = new Stack<int>();
-            for (int i = 0; i < _layerCount; i++)
+            for (int i = 0; i < maxClients; i++)
             {
                 int layerId = i + 1;
                 string layerName = $"Player{layerId}";
@@ -42,30 +27,8 @@ namespace DefaultNamespace
             }
         }
 
-        public override void OnStartNetwork()
-        {
-            if (IsServerInitialized)
-                CollisionsState.Value = _defaultCollisionsState;
-            
-            if (!IsClientInitialized)
-                return;
-            
-            _toggleCollisionsButton.onClick.AddListener(ToggleCollisions);
-            CollisionsState.OnChange += OnCollisionsChanged;
-        }
-
-        private void OnCollisionsChanged(bool prev, bool next, bool asServer)
-        {
-            _collisionsStateText.text = next ? "On" : "Off";
-        }
-
-        private void ToggleCollisions()
-        {
-            if (IsClientInitialized)
-                RequestToggleCollisions();
-        }
-
         public bool TryGetLayer(out int layer) => _availableLayerMasks.TryPop(out layer);
+
         public void ReturnLayer(int layer) => _availableLayerMasks.Push(layer);
     }
 }

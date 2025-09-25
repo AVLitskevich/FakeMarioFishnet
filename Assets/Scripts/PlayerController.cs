@@ -1,5 +1,4 @@
-﻿using FishNet;
-using FishNet.Object.Prediction;
+﻿using FishNet.Object.Prediction;
 using FishNet.Transporting;
 using FishNet.Utility.Template;
 using GameKit.Dependencies.Utilities;
@@ -7,6 +6,7 @@ using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using VContainer;
 
 namespace DefaultNamespace
 {
@@ -53,13 +53,12 @@ namespace DefaultNamespace
         [SerializeField] private bool _canMove;
         [SerializeField] private GameState _state;
 
-        private bool IsGrounded => Physics2D.Raycast(transform.position, Vector2.down,
-            _groundCheckDistance, _groundMask);
+        [Inject] private readonly LayerProvider _layerProvider;
+        [Inject] private readonly RaceManager _raceManager;
 
-        private bool CanMove()
-        {
-            return RaceManager.Instance.CurrentState == GameState.Race || RaceManager.Instance.CurrentState == GameState.Waiting;
-        }
+        private bool IsGrounded => Physics2D.Raycast(transform.position, Vector2.down, _groundCheckDistance, _groundMask);
+        private bool CanMove => _raceManager.CurrentState == GameState.Race ||
+                                _raceManager.CurrentState == GameState.Waiting;
 
         private PredictionRigidbody2D _predictionRigidbody;
         private PlayerControls _playerControls;
@@ -84,22 +83,9 @@ namespace DefaultNamespace
             _defaultLayer = gameObject.layer;
         }
 
-        private void OnCollisionStateChanged(bool prev, bool next, bool asServer)
-        {
-            if (next)
-            {
-                ReturnLayer();
-            }
-            else
-            {
-                ReturnLayer();
-                GetLayer();
-            }
-        }
-
         private void GetLayer()
         {
-            if (LayerProvider.Instance.TryGetLayer(out int layer))
+            if (_layerProvider.TryGetLayer(out int layer))
             {
                 gameObject.SetLayerWithChildren(layer);
                 _layer = layer;
@@ -110,7 +96,7 @@ namespace DefaultNamespace
         {
             if (_layer.HasValue)
             {
-                LayerProvider.Instance.ReturnLayer(_layer.Value);
+                _layerProvider.ReturnLayer(_layer.Value);
                 _layer = null;
                 gameObject.SetLayerWithChildren(_defaultLayer);
             }
@@ -118,10 +104,7 @@ namespace DefaultNamespace
 
         public override void OnStartNetwork()
         {
-            LayerProvider.Instance.CollisionsState.OnChange += OnCollisionStateChanged;
-            if (!LayerProvider.Instance.CollisionsState.Value)
-                GetLayer();
-            
+            GetLayer();
             if (!Owner.IsLocalClient)
                 return;
 
@@ -148,8 +131,6 @@ namespace DefaultNamespace
 
         private void OnDestroy()
         {
-            LayerProvider.Instance.CollisionsState.OnChange -= OnCollisionStateChanged;
-            
             if (_playerControls != null)
             {
                 _playerControls.Player.Move.performed -= OnMovePerformed;
@@ -185,6 +166,9 @@ namespace DefaultNamespace
         [Replicate]
         private void SimulateInputs(Input input, ReplicateState state = ReplicateState.Invalid, Channel channel = Channel.Unreliable)
         {
+            _canMove = CanMove;
+            _state = _raceManager.CurrentState;
+            
             _hpBarImage.fillAmount = _health / _maxHealth;
             if (_knockbackTimer > 0f)
             {
@@ -196,7 +180,7 @@ namespace DefaultNamespace
                     _health = _maxHealth;
                 }
             }
-            else if (CanMove())
+            else if (CanMove)
             {
                 if (Mathf.Abs(input.Movement) > 0.01f)
                 {
@@ -207,9 +191,6 @@ namespace DefaultNamespace
                 if (input.Jump && (IsGrounded || _coyoteTimer > 0f))
                     Jump();
             }
-
-            _canMove = CanMove();
-            _state = RaceManager.Instance.CurrentState;
 
             if (IsGrounded)
                 _coyoteTimer = _coyoteTime;
