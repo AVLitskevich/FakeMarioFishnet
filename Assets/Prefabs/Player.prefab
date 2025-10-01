@@ -53,6 +53,7 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 4944023266038734634}
   _networkObjectCache: {fileID: 4944023266038734634}
   _tickCallbacks: 6
+  _predictInputs: 1
   _speed: 14
   _jumpHeight: 6
   _maxHealth: 100
@@ -64,6 +65,7 @@ MonoBehaviour:
     m_Bits: 1
   _hpBarImage: {fileID: 9191914387510892802}
   _rigidbody: {fileID: 890865572886444992}
+  _maxAirJumps: 1
   _canMove: 0
   _state: 0
 --- !u!114 &4944023266038734634
@@ -112,7 +114,7 @@ MonoBehaviour:
   _teleportThreshold: 1
   <PrefabId>k__BackingField: 0
   <SpawnableCollectionId>k__BackingField: 0
-  <AssetPathHash>k__BackingField: 13628332130000829123
+  <AssetPathHash>k__BackingField: 7807759643866311769
   <SceneId>k__BackingField: 0
   SerializedTransformProperties:
     Position: {x: 0, y: 0, z: 0}

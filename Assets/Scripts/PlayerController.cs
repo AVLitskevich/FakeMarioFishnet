@@ -1,5 +1,4 @@
-﻿using FishNet;
-using FishNet.Object.Prediction;
+﻿using FishNet.Object.Prediction;
 using FishNet.Transporting;
 using FishNet.Utility.Template;
 using GameKit.Dependencies.Utilities;
@@ -40,6 +39,7 @@ namespace DefaultNamespace
             public void Dispose() { }
         }
 
+        [SerializeField] private bool _predictInputs;
         [SerializeField] private float _speed;
         [SerializeField] private float _jumpHeight;
         [SerializeField] private float _maxHealth;
@@ -76,6 +76,8 @@ namespace DefaultNamespace
         private float _health;
         private float _knockbackTimer;
         private float _coyoteTimer;
+
+        private Input _lastCreatedInput;
 
         private void Awake()
         {
@@ -190,6 +192,17 @@ namespace DefaultNamespace
         private void SimulateInputs(Input input, ReplicateState state = ReplicateState.Invalid, Channel channel = Channel.Unreliable)
         {
             _hpBarImage.fillAmount = _health / _maxHealth;
+
+            if (state.IsFuture())
+            {
+                if (_predictInputs)
+                    input = _lastCreatedInput;
+            }
+            else if (state.IsReplayedCreated())
+            {
+                _lastCreatedInput = input;
+            }
+            
             if (_knockbackTimer > 0f)
             {
                 _knockbackTimer -= (float)TimeManager.TickDelta;
@@ -223,9 +236,6 @@ namespace DefaultNamespace
                     }
                 }
             }
-
-            _canMove = CanMove();
-            _state = RaceManager.Instance.CurrentState;
 
             if (IsGrounded)
             {
