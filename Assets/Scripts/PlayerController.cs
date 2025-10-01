@@ -18,6 +18,7 @@ namespace DefaultNamespace
 
             public float Movement;
             public bool Jump;
+            public bool JumpHeld;
 
             public uint GetTick() => _tick;
             public void SetTick(uint value) => _tick = value;
@@ -50,6 +51,11 @@ namespace DefaultNamespace
         [SerializeField] private Image _hpBarImage;
         [SerializeField] private Rigidbody2D _rigidbody;
         [SerializeField] private int _maxAirJumps = 1;
+        [SerializeField] private float _groundAcceleration;
+        [SerializeField] private float _groundDeceleration;
+        [SerializeField] private float _airAcceleration;
+        [SerializeField] private float _airDeceleration;
+        [SerializeField] private float _maxFallSpeed;
         
         [Header("Debug")]
         [SerializeField] private bool _canMove;
@@ -75,7 +81,6 @@ namespace DefaultNamespace
         private bool _jump;
         private float _health;
         private float _knockbackTimer;
-        private float _coyoteTimer;
 
         private void Awake()
         {
@@ -83,7 +88,6 @@ namespace DefaultNamespace
             _predictionRigidbody.Initialize(_rigidbody);
 
             _knockbackTimer = 0f;
-            _coyoteTimer = _coyoteTime;
             _health = _maxHealth;
             _defaultLayer = gameObject.layer;
         }
@@ -189,55 +193,52 @@ namespace DefaultNamespace
         [Replicate]
         private void SimulateInputs(Input input, ReplicateState state = ReplicateState.Invalid, Channel channel = Channel.Unreliable)
         {
+            float dt = (float)TimeManager.TickDelta;
+            Vector2 currentVelocity = _rigidbody.linearVelocity;
             _hpBarImage.fillAmount = _health / _maxHealth;
             if (_knockbackTimer > 0f)
             {
-                _knockbackTimer -= (float)TimeManager.TickDelta;
+                _knockbackTimer -= dt;
                 if (_knockbackTimer <= 0f && _health <= 0f)
                 {
-                    _rigidbody.position = Vector3.zero;
-                    _rigidbody.linearVelocity = Vector2.zero;
+                    _predictionRigidbody.Velocity(Vector2.zero);
+                    _rigidbody.position = Vector2.zero;
                     _health = _maxHealth;
                 }
             }
             else if (CanMove())
             {
+                float newX = currentVelocity.x;
                 if (Mathf.Abs(input.Movement) > 0.01f)
                 {
-                    var velocity = new Vector2(input.Movement * _speed, _rigidbody.linearVelocity.y);
-                    _predictionRigidbody.Velocity(velocity);
+                    float targetSpeed = input.Movement * _speed;
+                    var acceleration = IsGrounded ? _groundAcceleration : _airAcceleration;
+                    newX = Mathf.MoveTowards(currentVelocity.x, targetSpeed, acceleration * dt);
+                    _predictionRigidbody.Velocity(new Vector2(newX, _rigidbody.linearVelocity.y));
+                }
+                else
+                {
+                    var deceleration = IsGrounded ? _groundAcceleration : _airAcceleration;
+                    newX = Mathf.MoveTowards(currentVelocity.x, 0f, deceleration * dt);
+                    _predictionRigidbody.Velocity(new Vector2(newX, _rigidbody.linearVelocity.y));
                 }
 
-                if (input.Jump)
+                if (input.Jump && IsGrounded)
                 {
-                    bool canGroundJump = IsGrounded || _coyoteTimer > 0f;
-                    if (canGroundJump)
-                    {
-                        Jump();
-                        _jumpsUsed = 0;
-                    }
-                    else if (_jumpsUsed < _maxAirJumps)
-                    {
-                        Jump();
-                        _jumpsUsed++;
-                    }
+                    Jump();
                 }
             }
 
             _canMove = CanMove();
             _state = RaceManager.Instance.CurrentState;
-
-            if (IsGrounded)
+            _predictionRigidbody.AddForce(Physics2D.gravity);
+            var velocity = _rigidbody.linearVelocity;
+            if (velocity.y < -_maxFallSpeed)
             {
-                _coyoteTimer = _coyoteTime;
-                _jumpsUsed = 0;
-            }
-            else
-            {
-                _coyoteTimer -= (float)TimeManager.TickDelta;
+                velocity.y = -_maxFallSpeed;
+                _predictionRigidbody.Velocity(velocity);
             }
             
-            _predictionRigidbody.AddForce(Physics.gravity);
             _predictionRigidbody.Simulate();
         }
 
@@ -252,8 +253,6 @@ namespace DefaultNamespace
             {
                 Rigidbody = _predictionRigidbody,
                 KnockbackTimer = _knockbackTimer,
-                CoyoteTimer = _coyoteTimer,
-                JumpsUsed = _jumpsUsed,
                 Health = _health
             };
             ReconcileState(state);
@@ -264,8 +263,6 @@ namespace DefaultNamespace
         {
             _knockbackTimer = state.KnockbackTimer;
             _health = state.Health;
-            _coyoteTimer = state.CoyoteTimer;
-            _jumpsUsed = state.JumpsUsed;
             _predictionRigidbody.Reconcile(state.Rigidbody);
         }
         

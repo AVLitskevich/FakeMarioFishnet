@@ -54,7 +54,7 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 4944023266038734634}
   _tickCallbacks: 6
   _speed: 14
-  _jumpHeight: 6
+  _jumpHeight: 8
   _maxHealth: 100
   _knockbackForce: 20
   _groundCheckDistance: 1.5
@@ -64,6 +64,12 @@ MonoBehaviour:
     m_Bits: 1
   _hpBarImage: {fileID: 9191914387510892802}
   _rigidbody: {fileID: 890865572886444992}
+  _maxAirJumps: 1
+  _groundAcceleration: 100
+  _groundDeceleration: 40
+  _airAcceleration: 35
+  _airDeceleration: 30
+  _maxFallSpeed: 25
   _canMove: 0
   _state: 0
 --- !u!114 &4944023266038734634
