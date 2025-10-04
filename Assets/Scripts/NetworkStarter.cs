@@ -1,39 +1,44 @@
 ﻿using FishNet.Managing;
-using MultiplayerSDK.Connection;
+using MultiplayerSDK.Common;
 using UnityEngine;
 using UnityEngine.UI;
-using VContainer;
 
 namespace DefaultNamespace
 {
-    public class NetworkStarter : MonoBehaviour
+    public class NetworkStarter : NetworkStarterBase
     {
         [SerializeField] private NetworkManager _networkManager;
         [SerializeField] private Button _startServerButton;
         [SerializeField] private Button _connectButton;
         [SerializeField] private GameObject _inGamePanel;
-        [SerializeField] private ConnectionConfig _config;
 
-        [Inject] private readonly IConnectionController _connectionController;
-
-        private void Start()
+        protected override void InitManualConnection()
         {
             _inGamePanel.SetActive(false);
-            _startServerButton.onClick.AddListener(StartServer);
-            _connectButton.onClick.AddListener(StartClient);
+            _startServerButton.onClick.AddListener(OnStartServer);
+            _connectButton.onClick.AddListener(OnStartClient);
         }
         
-        private void StartServer()
+        private void OnStartServer()
         {
-            _connectionController.StartServer(_config);
+            StartServer();
+            _startServerButton.gameObject.SetActive(false);
+            _connectButton.gameObject.SetActive(false);
         }
 
-        private void StartClient()
+        private void OnStartClient()
         {
-            _connectionController.StartClient(_config);
+            StartClient();
             _startServerButton.gameObject.SetActive(false);
             _connectButton.gameObject.SetActive(false);
             _inGamePanel.SetActive(true);
+        }
+
+        protected override void OnConnectionStarted(ConnectionMode mode)
+        {
+            _startServerButton.gameObject.SetActive(false);
+            _connectButton.gameObject.SetActive(false);
+            _inGamePanel.SetActive(mode == ConnectionMode.Client);
         }
     }
 }

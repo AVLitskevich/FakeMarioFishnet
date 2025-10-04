@@ -1591,11 +1591,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18e201be888546b4a24ac69b3d8a2057, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _dedicatedServerMode: 2
+  _webGlMode: 1
+  _connectionMode: 0
+  _config: {fileID: 11400000, guid: 5fa8a9f51d08fac4eb687a64030b4d8e, type: 2}
   _networkManager: {fileID: 7443408887765747156}
   _startServerButton: {fileID: 1734752909}
   _connectButton: {fileID: 40239264}
   _inGamePanel: {fileID: 773952958}
-  _config: {fileID: 11400000, guid: 4005b0ff013f89644a5e23e586d77277, type: 2}
 --- !u!4 &600544228
 Transform:
   m_ObjectHideFlags: 0
@@ -10105,54 +10108,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1089079473}
   m_CullTransparentMesh: 1
---- !u!1 &1089505947
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1089505949}
-  - component: {fileID: 1089505948}
-  m_Layer: 0
-  m_Name: AutoStarter
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1089505948
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1089505947}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1646c49c444e4e8c8ca0dd7378bcc324, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _dedicatedServerMode: 2
-  _webGlMode: 1
-  _autoConnectionMode: 0
-  _config: {fileID: 11400000, guid: 4005b0ff013f89644a5e23e586d77277, type: 2}
---- !u!4 &1089505949
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1089505947}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1090199441
 GameObject:
   m_ObjectHideFlags: 0
@@ -13418,7 +13373,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 1701835468}
   - {fileID: 1149811145}
-  - {fileID: 1089505949}
   - {fileID: 823921870}
   - {fileID: 600544228}
   - {fileID: 988315687}

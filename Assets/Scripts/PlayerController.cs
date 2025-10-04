@@ -67,8 +67,7 @@ namespace DefaultNamespace
 
         private bool CanMove()
         {
-            return RaceManager.Instance.CurrentState == GameState.Race ||
-                   RaceManager.Instance.CurrentState == GameState.Waiting;
+            return _knockbackTimer <= 0 && _health > 0 && RaceManager.Instance.CurrentState is GameState.Race or GameState.Waiting;
         }
 
         private PredictionRigidbody2D _predictionRigidbody;
@@ -222,25 +221,16 @@ namespace DefaultNamespace
             if (_knockbackTimer > 0f)
             {
                 _knockbackTimer -= dt;
-                if (_knockbackTimer <= 0f && _health <= 0f)
-                {
-                    _predictionRigidbody.Velocity(Vector2.zero);
-                    _rigidbody.position = Vector2.zero;
-                    _health = _maxHealth;
-                }
             }
-            else if (CanMove())
+            else if (_knockbackTimer <= 0f && _health <= 0f)
             {
-                if (isGrounded && !_wasGrounded)
-                {
-                    if (!Mathf.Approximately(_horizontalSpeed, 0f))
-                    {
-                        float landAcceleration = _prevHorizontalSpeed / _horizontalSpeed;
-                        _predictionRigidbody.AddForce(currentVelocity * landAcceleration);
-                        currentVelocity.x += landAcceleration;
-                    }
-                }
-                
+                _predictionRigidbody.Velocity(Vector2.zero);
+                _rigidbody.position = Vector2.zero;
+                _health = _maxHealth;
+            }
+            
+            if (CanMove())
+            {
                 if (Mathf.Abs(input.Movement) > 0.01f)
                 {
                     float targetSpeed = input.Movement * _speed;
@@ -267,7 +257,6 @@ namespace DefaultNamespace
                 _coyoteTimer -= (float)TimeManager.TickDelta;
 
             _wasGrounded = isGrounded;
-            _predictionRigidbody.AddForce(Physics2D.gravity);
             
             var velocity = _rigidbody.linearVelocity;
             if (velocity.y < -_maxFallSpeed)
@@ -276,6 +265,7 @@ namespace DefaultNamespace
                 _predictionRigidbody.Velocity(velocity);
             }
 
+            _predictionRigidbody.AddForce(Physics2D.gravity);
             _predictionRigidbody.Simulate();
         }
 
@@ -322,17 +312,17 @@ namespace DefaultNamespace
         public void TakeDamage(ObstacleController obstacleController)
         {
             _health -= obstacleController.Damage;
+            if (_health <= 0)
+                return;
+            
             Knockback(obstacleController.transform.position);
         }
 
         private void Knockback(Vector3 attackerPosition)
         {
             Vector2 direction = (transform.position - attackerPosition).normalized;
-
             if (Mathf.Abs(direction.x) < 0.1f)
-            {
                 direction.x = transform.position.x >= attackerPosition.x ? 1f : -1f;
-            }
 
             direction.y = Mathf.Abs(direction.y);
             direction.Normalize();

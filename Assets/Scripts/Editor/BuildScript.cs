@@ -5,16 +5,18 @@ using UnityEditor.Build.Reporting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+// ReSharper disable once CheckNamespace
 public static class BuildScript
 {
     private const string BuildPathArgument = "-buildPath";
     private const string BuildNameArgument = "-buildName";
+    private const string BuildDevelopmentArgument = "-development";
     
     [MenuItem("Build/Build Server")]
     public static void BuildServer()
     {
         Debug.Log("Building server...");
-        if (!TryGetArgument(BuildNameArgument, out var buildName))
+        if (!TryGetArgumentValue(BuildNameArgument, out var buildName))
         {
             Debug.LogError("Build name not specified");
             EditorApplication.Exit(1);
@@ -34,7 +36,7 @@ public static class BuildScript
 
     private static void Build(BuildTarget target, int subtarget = 0, string buildName = "")
     {
-        if (!TryGetArgument(BuildPathArgument, out string buildPath))
+        if (!TryGetArgumentValue(BuildPathArgument, out string buildPath))
         {
             Debug.LogError("Build path not specified");
             EditorApplication.Exit(1);
@@ -48,6 +50,10 @@ public static class BuildScript
             Directory.Delete(buildPath, true);
         }
 
+        var buildOptions = BuildOptions.CleanBuildCache;
+        if (HasArgument(BuildDevelopmentArgument))
+            buildOptions |= BuildOptions.Development;
+        
         string resultPath = Path.Combine(buildPath, buildName);
         var options = new BuildPlayerOptions
         {
@@ -55,7 +61,7 @@ public static class BuildScript
             locationPathName = resultPath,
             target = target,
             subtarget = subtarget,
-            options = BuildOptions.Development,
+            options = buildOptions,
         };
         
         Debug.Log($"Executing build at {resultPath}");
@@ -82,7 +88,7 @@ public static class BuildScript
         return scenes;
     }
     
-    private static bool TryGetArgument(string argumentName, out string value)
+    private static bool TryGetArgumentValue(string argumentName, out string value)
     {
         Debug.Log($"Searching for argument: {argumentName}");
         string[] args = Environment.GetCommandLineArgs();
@@ -98,6 +104,23 @@ public static class BuildScript
 
         Debug.Log($"Argument {argumentName} not found");
         value = null;
+        return false;
+    }
+    
+    private static bool HasArgument(string argumentName)
+    {
+        Debug.Log($"Searching for argument: {argumentName}");
+        string[] args = Environment.GetCommandLineArgs();
+        foreach (var argument in args)
+        {
+            if (string.Equals(argument, argumentName))
+            {
+                Debug.Log($"Found argument {argumentName}");
+                return true;
+            }
+        }
+
+        Debug.Log($"Argument {argumentName} not found");
         return false;
     }
 }

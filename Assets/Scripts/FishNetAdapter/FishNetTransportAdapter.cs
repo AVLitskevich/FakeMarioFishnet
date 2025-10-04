@@ -35,6 +35,7 @@ namespace FishNetAdapter
 
         private void OnClientConnectionState(ClientConnectionStateArgs stateArgs)
         {
+            Debug.Log($"[FishNetTransportAdapter] Client connection state: {stateArgs.ConnectionState}");
             if (stateArgs.ConnectionState == LocalConnectionState.Started)
             {
                 OnConnected?.Invoke();
@@ -47,6 +48,7 @@ namespace FishNetAdapter
 
         private void OnServerConnectionState(ServerConnectionStateArgs stateArgs)
         {
+            Debug.Log($"[FishNetTransportAdapter] Server connection state: {stateArgs.ConnectionState}");
             if (stateArgs.ConnectionState == LocalConnectionState.Started)
             {
                 OnConnected?.Invoke();
@@ -72,6 +74,7 @@ namespace FishNetAdapter
 
         public void StartServer(ConnectionConfig config)
         {
+            Debug.Log($"[FishNetTransportAdapter] Starting server at port {config.ServerListenPort}");
             _transport.SetPort(config.ServerListenPort);
             _transport.UseEncryption = false;
             
