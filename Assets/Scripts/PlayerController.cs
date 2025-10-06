@@ -41,30 +41,24 @@ namespace DefaultNamespace
             public void Dispose() { }
         }
 
-        [SerializeField] private float _speed;
-        [SerializeField] private float _jumpHeight;
-        [SerializeField] private float _maxHealth;
-        [SerializeField] private float _knockbackForce;
-        [SerializeField] private float _groundCheckDistance;
-        [SerializeField] private float _coyoteTime;
+        [SerializeField] private Animator _animator;
+        [SerializeField] private SpriteRenderer _spriteRenderer;
         [SerializeField] private LayerMask _groundMask;
         [SerializeField] private Image _hpBarImage;
         [SerializeField] private Rigidbody2D _rigidbody;
-        [SerializeField] private int _maxAirJumps = 1;
-        [SerializeField] private float _groundAcceleration;
-        [SerializeField] private float _groundDeceleration;
-        [SerializeField] private float _airAcceleration;
-        [SerializeField] private float _airDeceleration;
-        [SerializeField] private float _maxFallSpeed;
+
+        [Header("Movements")] 
+        [SerializeField] private PlayerMovementConfig _playerMovementConfig;
         
         [Header("Debug")]
         [SerializeField] private bool _canMove;
         [SerializeField] private GameState _state;
         
         private int _jumpsUsed;
+        private bool _wasGrounded;
 
         private bool IsGrounded => Physics2D.Raycast(transform.position, Vector2.down,
-            _groundCheckDistance, _groundMask);
+            _playerMovementConfig._groundCheckDistance, _groundMask);
 
         private bool CanMove()
         {
@@ -88,7 +82,7 @@ namespace DefaultNamespace
             _predictionRigidbody.Initialize(_rigidbody);
 
             _knockbackTimer = 0f;
-            _health = _maxHealth;
+            _health = _playerMovementConfig._maxHealth;
             _defaultLayer = gameObject.layer;
         }
 
@@ -195,7 +189,7 @@ namespace DefaultNamespace
         {
             float dt = (float)TimeManager.TickDelta;
             Vector2 currentVelocity = _rigidbody.linearVelocity;
-            _hpBarImage.fillAmount = _health / _maxHealth;
+            _hpBarImage.fillAmount = _health / _playerMovementConfig._maxHealth;
             if (_knockbackTimer > 0f)
             {
                 _knockbackTimer -= dt;
@@ -203,7 +197,7 @@ namespace DefaultNamespace
                 {
                     _predictionRigidbody.Velocity(Vector2.zero);
                     _rigidbody.position = Vector2.zero;
-                    _health = _maxHealth;
+                    _health = _playerMovementConfig._maxHealth;
                 }
             }
             else if (CanMove())
@@ -211,21 +205,29 @@ namespace DefaultNamespace
                 float newX = currentVelocity.x;
                 if (Mathf.Abs(input.Movement) > 0.01f)
                 {
-                    float targetSpeed = input.Movement * _speed;
-                    var acceleration = IsGrounded ? _groundAcceleration : _airAcceleration;
+                    float targetSpeed = input.Movement * _playerMovementConfig._speed;
+                    var acceleration = IsGrounded ? _playerMovementConfig._groundAcceleration : _playerMovementConfig._airAcceleration;
                     newX = Mathf.MoveTowards(currentVelocity.x, targetSpeed, acceleration * dt);
                     _predictionRigidbody.Velocity(new Vector2(newX, _rigidbody.linearVelocity.y));
+                    if (input.Movement > 0)
+                    {
+                        _spriteRenderer.flipX = false;
+                    }
+                    else if (input.Movement < 0)
+                    {
+                        _spriteRenderer.flipX = true;
+                    }
                 }
                 else
                 {
-                    var deceleration = IsGrounded ? _groundAcceleration : _airAcceleration;
+                    var deceleration = IsGrounded ? _playerMovementConfig._groundAcceleration : _playerMovementConfig._airAcceleration;
                     newX = Mathf.MoveTowards(currentVelocity.x, 0f, deceleration * dt);
                     _predictionRigidbody.Velocity(new Vector2(newX, _rigidbody.linearVelocity.y));
                 }
 
                 if (input.Jump && IsGrounded)
                 {
-                    Jump();
+                    Jump(state);
                 }
             }
 
@@ -233,11 +235,28 @@ namespace DefaultNamespace
             _state = RaceManager.Instance.CurrentState;
             _predictionRigidbody.AddForce(Physics2D.gravity);
             var velocity = _rigidbody.linearVelocity;
-            if (velocity.y < -_maxFallSpeed)
+            if (velocity.y < -_playerMovementConfig._maxFallSpeed)
             {
-                velocity.y = -_maxFallSpeed;
+                velocity.y = -_playerMovementConfig._maxFallSpeed;
                 _predictionRigidbody.Velocity(velocity);
             }
+
+            bool groundedNow = IsGrounded;
+            if (state.ContainsCreated() && !state.IsFuture())
+            {
+                _animator.SetFloat("SpeedX", Mathf.Abs(_rigidbody.linearVelocity.x));
+                _animator.SetFloat("VelY", Mathf.Abs(_rigidbody.linearVelocity.y));
+                _animator.SetBool("Grounded", groundedNow);
+                if (state.ContainsTicked() && !state.ContainsReplayed())
+                {
+                    if (!_wasGrounded && groundedNow)
+                    {
+                        _animator.ResetTrigger("JumpTrigger");
+                    }
+                }
+            }
+
+            _wasGrounded = groundedNow;
             
             _predictionRigidbody.Simulate();
         }
@@ -266,12 +285,16 @@ namespace DefaultNamespace
             _predictionRigidbody.Reconcile(state.Rigidbody);
         }
         
-        private void Jump()
+        private void Jump(ReplicateState state)
         {
-            float jumpForce = Mathf.Sqrt(Mathf.Abs(-2.0f * Physics.gravity.y * _jumpHeight * _rigidbody.gravityScale));
+            float jumpForce = Mathf.Sqrt(Mathf.Abs(-2.0f * Physics.gravity.y * _playerMovementConfig._jumpHeight * _rigidbody.gravityScale));
             if (_rigidbody.linearVelocity.y < 0f)
                 jumpForce -= _rigidbody.linearVelocity.y;
-            
+
+            if (state.ContainsTicked() && !state.ContainsReplayed())
+            {
+                _animator.SetTrigger("JumpTrigger");
+            }
             _predictionRigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         }
 
@@ -293,7 +316,7 @@ namespace DefaultNamespace
             direction.Normalize();
 
             _rigidbody.linearVelocity = Vector2.zero;
-            _rigidbody.AddForce(direction * _knockbackForce, ForceMode2D.Impulse);
+            _rigidbody.AddForce(direction * _playerMovementConfig._knockbackForce, ForceMode2D.Impulse);
             
             _knockbackTimer = .5f;
         }
