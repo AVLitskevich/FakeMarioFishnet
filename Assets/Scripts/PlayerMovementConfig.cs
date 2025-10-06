@@ -2,9 +2,9 @@ using UnityEngine;
 
 namespace DefaultNamespace
 {
-    public class PlayerMovementConfig
+    [CreateAssetMenu(fileName = "PlayerMovementConfig", menuName = "Configs/Player Movement Config", order = 1)]
+    public class PlayerMovementConfig : ScriptableObject
     {
-        [SerializeField] public int _maxAirJumps = 1;
         [SerializeField] public float _groundAcceleration;
         [SerializeField] public float _groundDeceleration;
         [SerializeField] public float _airAcceleration;
@@ -15,6 +15,5 @@ namespace DefaultNamespace
         [SerializeField] public float _maxHealth;
         [SerializeField] public float _knockbackForce;
         [SerializeField] public float _groundCheckDistance;
-        [SerializeField] public float _coyoteTime;
     }
 }

@@ -18,7 +18,6 @@ namespace DefaultNamespace
 
             public float Movement;
             public bool Jump;
-            public bool JumpHeld;
 
             public uint GetTick() => _tick;
             public void SetTick(uint value) => _tick = value;
@@ -30,9 +29,7 @@ namespace DefaultNamespace
             private uint _tick;
 
             public float KnockbackTimer;
-            public float CoyoteTimer;
             public float Health;
-            public int JumpsUsed;
             public PredictionRigidbody2D Rigidbody;
             
             public uint GetTick() => _tick;
@@ -123,9 +120,12 @@ namespace DefaultNamespace
             LayerProvider.Instance.CollisionsState.OnChange += OnCollisionStateChanged;
             if (!LayerProvider.Instance.CollisionsState.Value)
                 GetLayer();
-            
+
             if (!Owner.IsLocalClient)
+            {
+                TryApplyNonLocalVisuals();
                 return;
+            }
 
             _playerControls = new PlayerControls();
             _playerControls.Enable();
@@ -146,6 +146,19 @@ namespace DefaultNamespace
         private void OnJumpPerformed(InputAction.CallbackContext ctx)
         {
             _jump = true;
+        }
+
+        private void TryApplyNonLocalVisuals()
+        {
+            var sprite = GetComponentInChildren<SpriteRenderer>();
+            if (sprite == null)
+            {
+                return;
+            }
+            var c = sprite.color;
+            c *= 0.7f;
+            c.a = 0.9f;
+            sprite.color = c;
         }
 
         private void OnDestroy()
@@ -220,7 +233,7 @@ namespace DefaultNamespace
                 }
                 else
                 {
-                    var deceleration = IsGrounded ? _playerMovementConfig._groundAcceleration : _playerMovementConfig._airAcceleration;
+                    var deceleration = IsGrounded ? _playerMovementConfig._groundDeceleration : _playerMovementConfig._airDeceleration;
                     newX = Mathf.MoveTowards(currentVelocity.x, 0f, deceleration * dt);
                     _predictionRigidbody.Velocity(new Vector2(newX, _rigidbody.linearVelocity.y));
                 }
