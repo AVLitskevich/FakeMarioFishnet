@@ -53,23 +53,14 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 4944023266038734634}
   _networkObjectCache: {fileID: 4944023266038734634}
   _tickCallbacks: 6
-  _predictInputs: 0
-  _speed: 0
-  _jumpHeight: 0
-  _maxHealth: 0
-  _knockbackForce: 0
-  _groundCheckDistance: 0
-  _coyoteTime: 0
+  _animator: {fileID: 4686338298445110540}
+  _spriteRenderer: {fileID: 5252079322890188045}
   _groundMask:
     serializedVersion: 2
     m_Bits: 1
   _hpBarImage: {fileID: 9191914387510892802}
   _rigidbody: {fileID: 890865572886444992}
-  _groundAcceleration: 0
-  _groundDeceleration: 0
-  _airAcceleration: 0
-  _airDeceleration: 0
-  _maxFallSpeed: 0
+  _playerMovementConfig: {fileID: 11400000, guid: 13dcf7b23d5d25b489e33bb3ce163f55, type: 2}
 --- !u!114 &4944023266038734634
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -282,9 +273,19 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 448f525ccc15ec84b8e706990dd066c2, type: 3}
+--- !u!95 &4686338298445110540 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 6542109632890407795, guid: 448f525ccc15ec84b8e706990dd066c2, type: 3}
+  m_PrefabInstance: {fileID: 2000453477535913599}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5081052010537483841 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6719524802415552574, guid: 448f525ccc15ec84b8e706990dd066c2, type: 3}
+  m_PrefabInstance: {fileID: 2000453477535913599}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &5252079322890188045 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 5989835365424440178, guid: 448f525ccc15ec84b8e706990dd066c2, type: 3}
   m_PrefabInstance: {fileID: 2000453477535913599}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &9191914387510892802 stripped

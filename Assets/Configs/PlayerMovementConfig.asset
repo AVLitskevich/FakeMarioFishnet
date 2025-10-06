@@ -22,3 +22,5 @@ MonoBehaviour:
   _maxHealth: 100
   _knockbackForce: 20
   _groundCheckDistance: 1.5
+  _coyoteTime: 0.2
+  _predictInputs: 1
