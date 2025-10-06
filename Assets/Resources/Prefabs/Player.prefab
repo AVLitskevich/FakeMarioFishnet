@@ -53,12 +53,8 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 4944023266038734634}
   _networkObjectCache: {fileID: 4944023266038734634}
   _tickCallbacks: 6
-  _speed: 14
-  _jumpHeight: 8
-  _maxHealth: 100
-  _knockbackForce: 20
-  _groundCheckDistance: 1.5
-  _coyoteTime: 0.1
+  _animator: {fileID: 4686338298445110540}
+  _spriteRenderer: {fileID: 5252079322890188045}
   _groundMask:
     serializedVersion: 2
     m_Bits: 1
@@ -70,6 +66,12 @@ MonoBehaviour:
   _airAcceleration: 35
   _airDeceleration: 30
   _maxFallSpeed: 25
+  _speed: 14
+  _jumpHeight: 8
+  _maxHealth: 100
+  _knockbackForce: 20
+  _groundCheckDistance: 1.5
+  _coyoteTime: 0.1
   _canMove: 0
   _state: 0
 --- !u!114 &4944023266038734634
@@ -141,7 +143,7 @@ Rigidbody2D:
   m_LinearDamping: 0.05
   m_AngularDamping: 0.05
   m_GravityScale: 6
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 59079b41938c58648b67527cdab6ef16, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -162,7 +164,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 59079b41938c58648b67527cdab6ef16, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -186,8 +188,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.03038305, y: -0.1229645}
-  m_Size: {x: 1.1179105, y: 1.7743902}
+  m_Offset: {x: -0.038629055, y: -0.31674576}
+  m_Size: {x: 0.73859453, y: 1.3868277}
   m_Direction: 0
 --- !u!114 &675147628821742720
 MonoBehaviour:
@@ -245,7 +247,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6719524802415552574, guid: 448f525ccc15ec84b8e706990dd066c2, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.99
       objectReference: {fileID: 0}
     - target: {fileID: 6719524802415552574, guid: 448f525ccc15ec84b8e706990dd066c2, type: 3}
       propertyPath: m_LocalPosition.z
@@ -284,9 +286,19 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 448f525ccc15ec84b8e706990dd066c2, type: 3}
+--- !u!95 &4686338298445110540 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 6542109632890407795, guid: 448f525ccc15ec84b8e706990dd066c2, type: 3}
+  m_PrefabInstance: {fileID: 2000453477535913599}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5081052010537483841 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6719524802415552574, guid: 448f525ccc15ec84b8e706990dd066c2, type: 3}
+  m_PrefabInstance: {fileID: 2000453477535913599}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &5252079322890188045 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 5989835365424440178, guid: 448f525ccc15ec84b8e706990dd066c2, type: 3}
   m_PrefabInstance: {fileID: 2000453477535913599}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &9191914387510892802 stripped
