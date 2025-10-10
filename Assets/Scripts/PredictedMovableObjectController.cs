@@ -1,6 +1,7 @@
 ﻿using FishNet.Object.Prediction;
 using FishNet.Transporting;
 using FishNet.Utility.Template;
+using GameKit.Dependencies.Utilities;
 using UnityEngine;
 
 namespace DefaultNamespace
@@ -21,6 +22,7 @@ namespace DefaultNamespace
             private uint _tick;
 
             public double StartMoveTime;
+            public PredictionRigidbody2D Rigidbody;
 
             public uint GetTick() => _tick;
             public void SetTick(uint value) => _tick = value;
@@ -41,10 +43,19 @@ namespace DefaultNamespace
         [SerializeField] private bool _reconcile;
 
         private double _startMoveTime;
+        private PredictionRigidbody2D _predictionRigidbody;
         
         public override void OnStartNetwork()
         {
             _startMoveTime = TimeManager.TicksToTime(TimeManager.Tick);
+            _predictionRigidbody = ObjectCaches<PredictionRigidbody2D>.Retrieve();
+            _predictionRigidbody.Initialize(_rigidbody);
+        }
+
+        public override void OnStopNetwork()
+        {
+            base.OnStopNetwork();
+            ObjectCaches<PredictionRigidbody2D>.StoreAndDefault(ref _predictionRigidbody);
         }
 
         protected override void TimeManager_OnTick()
@@ -76,8 +87,13 @@ namespace DefaultNamespace
 
             _reconcile = state == ReplicateState.Replayed;
             
-            var position = Vector2.Lerp(startPoint.position, endPoint.position, t);
-            _rigidbody.position = position;
+            var targetPosition  = Vector2.Lerp(startPoint.position, endPoint.position, t);
+            var velocity = (targetPosition - _rigidbody.position) / (float)TimeManager.TickDelta;
+            // _rigidbody.position = targetPosition;
+            // _rigidbody.MovePosition(targetPosition);
+            // _rigidbody.linearVelocity = velocity;
+            _predictionRigidbody.Velocity(velocity);
+            _predictionRigidbody.Simulate();
         }
 
         protected override void TimeManager_OnPostTick()
@@ -90,6 +106,7 @@ namespace DefaultNamespace
             var state = new State
             {
                 StartMoveTime = _startMoveTime,
+                Rigidbody = _predictionRigidbody
             };
             ReconcileState(state);
         }
@@ -98,6 +115,7 @@ namespace DefaultNamespace
         private void ReconcileState(State state, Channel channel = Channel.Unreliable)
         {
             _startMoveTime = state.StartMoveTime;
+            _predictionRigidbody.Reconcile(state.Rigidbody);
         }
     }
 }
