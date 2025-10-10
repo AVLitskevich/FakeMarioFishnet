@@ -1,7 +1,6 @@
 ﻿using FishNet.Object.Prediction;
 using FishNet.Transporting;
 using FishNet.Utility.Template;
-using GameKit.Dependencies.Utilities;
 using UnityEngine;
 
 namespace DefaultNamespace
@@ -22,14 +21,13 @@ namespace DefaultNamespace
             private uint _tick;
 
             public double StartMoveTime;
-            public Vector2 Position;
-            // public PredictionRigidbody2D Rigidbody;
 
             public uint GetTick() => _tick;
             public void SetTick(uint value) => _tick = value;
             public void Dispose() { }
         }
 
+        [SerializeField] private bool _debug;
         [SerializeField] private float _oneSideMoveTime;
         [SerializeField] private AnimationCurve _oneSideMoveCurve;
         [SerializeField] private Transform _startPoint;
@@ -43,19 +41,10 @@ namespace DefaultNamespace
         [SerializeField] private bool _reconcile;
 
         private double _startMoveTime;
-        // private PredictionRigidbody2D _predictionRigidbody;
         
         public override void OnStartNetwork()
         {
             _startMoveTime = TimeManager.TicksToTime(TimeManager.Tick);
-            
-            // _predictionRigidbody = ObjectCaches<PredictionRigidbody2D>.Retrieve();
-            // _predictionRigidbody.Initialize(_rigidbody);
-        }
-
-        public override void OnStopNetwork()
-        {
-            // ObjectCaches<PredictionRigidbody2D>.StoreAndDefault(ref _predictionRigidbody);
         }
 
         protected override void TimeManager_OnTick()
@@ -76,8 +65,6 @@ namespace DefaultNamespace
             var endPoint = isGoingForward ? _endPoint : _startPoint;
 
             float t = timeSinceLastRoundTrip / _oneSideMoveTime;
-            if (t > 1)
-                Debug.LogError($"t > 1: {t}");
             
             t = t > 1 ? t - 1 : t;
             t = _oneSideMoveCurve.Evaluate(t);
@@ -89,8 +76,8 @@ namespace DefaultNamespace
 
             _reconcile = state == ReplicateState.Replayed;
             
-            _rigidbody.position = Vector2.Lerp(startPoint.position, endPoint.position, t);
-            // _predictionRigidbody.Simulate();
+            var position = Vector2.Lerp(startPoint.position, endPoint.position, t);
+            _rigidbody.position = position;
         }
 
         protected override void TimeManager_OnPostTick()
@@ -102,9 +89,7 @@ namespace DefaultNamespace
         {
             var state = new State
             {
-                // Rigidbody = _predictionRigidbody,
                 StartMoveTime = _startMoveTime,
-                // Position = _rigidbody.position,
             };
             ReconcileState(state);
         }
@@ -113,8 +98,6 @@ namespace DefaultNamespace
         private void ReconcileState(State state, Channel channel = Channel.Unreliable)
         {
             _startMoveTime = state.StartMoveTime;
-            // _rigidbody.position = state.Position;
-            // _predictionRigidbody.Reconcile(state.Rigidbody);
         }
     }
 }

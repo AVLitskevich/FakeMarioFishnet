@@ -1,32 +1,29 @@
 fileFormatVersion: 2
-guid: 341b226fa20286643a16a3fe05a3286b
+guid: 27df11ebd9f54314a9f96ea8a85a4e0f
 AssetOrigin:
   serializedVersion: 1
   productId: 135397
   packageName: Pixel 2D Castle Tileset
   packageVersion: 1.0
-  assetPath: Assets/Pixel2DCastleTileset/Sprites/Sliced/anim_light1.png
+  assetPath: Assets/Pixel2DCastleTileset/Sprites/Sliced/anim_light3.png
   uploadId: 283620
 TextureImporter:
   internalIDToNameTable:
   - first:
       213: 21300000
-    second: anim_light1_0
+    second: anim_light4_0
   - first:
       213: 21300002
-    second: anim_light1_1
+    second: anim_light4_1
   - first:
       213: 21300004
-    second: anim_light1_2
+    second: anim_light4_2
   - first:
       213: 21300006
-    second: anim_light1_3
+    second: anim_light4_3
   - first:
       213: 21300008
-    second: anim_light1_4
-  - first:
-      213: 21300010
-    second: anim_light1_5
+    second: anim_light4_4
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -118,17 +115,43 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: anim_light1_0
+      name: anim_light4_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 48
-        height: 32
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -137,20 +160,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 823f50148b8051a45983113cf130a659
+      spriteID: 2b297e59080355344b4cf17aa7a6cdb3
       internalID: 21300000
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: anim_light1_1
+      name: anim_light4_1
       rect:
         serializedVersion: 2
-        x: 48
+        x: 64
         y: 0
-        width: 48
-        height: 32
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -159,20 +182,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9f5914d4c7e63ce479d5e351dac6c65c
+      spriteID: 083eb4629dac4024ebe5924a4667df85
       internalID: 21300002
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: anim_light1_2
+      name: anim_light4_2
       rect:
         serializedVersion: 2
-        x: 96
+        x: 128
         y: 0
-        width: 48
-        height: 32
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -181,20 +204,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 924fece3c3bf1024283e72766a5a0ba0
+      spriteID: 44966f4ba907ac24fb6e6c9aad0d43bb
       internalID: 21300004
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: anim_light1_3
+      name: anim_light4_3
       rect:
         serializedVersion: 2
-        x: 144
+        x: 192
         y: 0
-        width: 48
-        height: 32
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -203,20 +226,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6c7fb74cdde38664aaf3a56b23927eba
+      spriteID: 0cc03eae696124745be14883aa4d09ba
       internalID: 21300006
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: anim_light1_4
+      name: anim_light4_4
       rect:
         serializedVersion: 2
-        x: 192
+        x: 256
         y: 0
-        width: 48
-        height: 32
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -225,30 +248,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6535657da38692346a6e6081f3c2ccb0
+      spriteID: 731e666b6fb4fee4f87eddc5a29ead41
       internalID: 21300008
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: anim_light1_5
-      rect:
-        serializedVersion: 2
-        x: 240
-        y: 0
-        width: 48
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 785bcfa6ef4864b4ca994da848def09d
-      internalID: 21300010
       vertices: []
       indices: 
       edges: []
@@ -257,7 +258,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 14a33b235213d7140ad1242323a38946
+    spriteID: c601dfc47a19c6343a6370cf89e44b27
     internalID: 0
     vertices: []
     indices: 
@@ -267,12 +268,11 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      anim_light1_0: 21300000
-      anim_light1_1: 21300002
-      anim_light1_2: 21300004
-      anim_light1_3: 21300006
-      anim_light1_4: 21300008
-      anim_light1_5: 21300010
+      anim_light4_0: 21300000
+      anim_light4_1: 21300002
+      anim_light4_2: 21300004
+      anim_light4_3: 21300006
+      anim_light4_4: 21300008
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -15,7 +15,7 @@ MonoBehaviour:
   ServerAddress: 134.209.13.79
   ServerListenPort: 10902
   WssConnectPort: 10102
-  WssServerName: skillcade.games
-  UseEncryption: 0
+  WssServerName: uswest.skillcade.games
+  UseEncryption: 1
   ReconnectDelay: 5
   ReconnectAttempts: 3
