@@ -2,6 +2,7 @@
 using FishNet.Transporting;
 using FishNet.Utility.Template;
 using GameKit.Dependencies.Utilities;
+using MultiplayerSDK;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;

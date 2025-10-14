@@ -4,7 +4,30 @@
     {
         public int PlayerId;
         public string Nickname;
-        public float Ping;
+        public long Ping;
         public bool IsReady;
+
+        public PlayerData WithNickname(string nickname)
+        {
+            Nickname = nickname;
+            return this;
+        }
+
+        public PlayerData WithPing(long ping)
+        {
+            Ping = ping;
+            return this;
+        }
+
+        public PlayerData WithIsReady(bool isReady)
+        {
+            IsReady = isReady;
+            return this;
+        }
+
+        public override string ToString()
+        {
+            return $"[{Nickname} - {PlayerId}] ping: {Ping}ms, isReady: {IsReady}";
+        }
     }
 }

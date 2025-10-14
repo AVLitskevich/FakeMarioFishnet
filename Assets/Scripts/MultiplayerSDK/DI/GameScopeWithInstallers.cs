@@ -15,7 +15,7 @@ namespace MultiplayerSDK.DI
                 if (installer != null)
                     installer.Install(builder);
             }
-            
+
             base.Configure(builder);
         }
     }

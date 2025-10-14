@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿using MultiplayerSDK.DI;
+using UnityEngine;
 using UnityEngine.Pool;
 
-namespace DefaultNamespace
+namespace MultiplayerSDK
 {
     public static class Extensions
     {
@@ -14,6 +15,12 @@ namespace DefaultNamespace
             {
                 child.gameObject.layer = layer;
             }
+        }
+
+        public static void InjectToMe(this object target)
+        {
+            if (ContainerSingletonWrapper.Instance != null)
+                ContainerSingletonWrapper.Instance.Resolver.Inject(target);
         }
     }
 }

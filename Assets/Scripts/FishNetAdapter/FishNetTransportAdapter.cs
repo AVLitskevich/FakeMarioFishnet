@@ -14,9 +14,9 @@ namespace FishNetAdapter
         public event Action OnConnected;
         public event Action<DisconnectionReason> OnDisconnected;
 
-        public bool IsConnected => _networkManager.IsClientStarted || _networkManager.IsServerStarted;
-        public bool IsServer => _networkManager.IsServerStarted;
-        public bool IsClient =>  _networkManager.IsClientStarted;
+        public bool IsConnected => IsServer || IsClient;
+        public bool IsServer { get; private set; }
+        public bool IsClient { get; private set; }
 
         [Inject] private NetworkManager _networkManager;
         [Inject] private UnityTransport _transport;
@@ -38,10 +38,12 @@ namespace FishNetAdapter
             Debug.Log($"[FishNetTransportAdapter] Client connection state: {stateArgs.ConnectionState}");
             if (stateArgs.ConnectionState == LocalConnectionState.Started)
             {
+                IsClient = true;
                 OnConnected?.Invoke();
             }
             else if (stateArgs.ConnectionState == LocalConnectionState.Stopped)
             {
+                IsClient = false;
                 OnDisconnected?.Invoke(GetDisconnectReason());
             }
         }
@@ -51,10 +53,12 @@ namespace FishNetAdapter
             Debug.Log($"[FishNetTransportAdapter] Server connection state: {stateArgs.ConnectionState}");
             if (stateArgs.ConnectionState == LocalConnectionState.Started)
             {
+                IsServer = true;
                 OnConnected?.Invoke();
             }
             else if (stateArgs.ConnectionState == LocalConnectionState.Stopped)
             {
+                IsServer = false;
                 OnDisconnected?.Invoke(DisconnectionReason.ServerStopped);
             }
         }
