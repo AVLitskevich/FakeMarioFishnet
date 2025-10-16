@@ -2,6 +2,7 @@
 using FishNet.Managing;
 using FishNet.Transporting.UTP;
 using FishNetAdapter.PingService;
+using GameStateMachine.States;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -24,6 +25,10 @@ namespace FishNetAdapter
 
             builder.RegisterEntryPoint<FishNetTransportAdapter>().AsSelf();
             builder.RegisterEntryPoint<FishNetPingService>();
+
+            builder.Register<WaitForPlayersState>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<RunningState>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<FinishedState>(Lifetime.Singleton).AsImplementedInterfaces();
         }
     }
 }
