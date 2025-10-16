@@ -16,19 +16,9 @@ namespace DefaultNamespace
             private uint _tick;
             public float Movement;
             public bool Jump;
-            public uint GetTick()
-            {
-                return _tick;
-            }
-
-            public void SetTick(uint value)
-            {
-                _tick = value;
-            }
-
-            public void Dispose()
-            {
-            }
+            public uint GetTick() => _tick;
+            public void SetTick(uint value) => _tick = value;
+            public void Dispose() { }
         }
 
         public struct State : IReconcileData
@@ -39,25 +29,9 @@ namespace DefaultNamespace
             public float Health;
             public float CoyoteTimer;
             public PredictionRigidbody2D Rigidbody;
-
-            public float BuffTimer;
-            public float SlowTimer;
-            public float SlowChargeTimer;
-            public bool HasSlowCharge;
-
-            public uint GetTick()
-            {
-                return _tick;
-            }
-
-            public void SetTick(uint value)
-            {
-                _tick = value;
-            }
-
-            public void Dispose()
-            {
-            }
+            public uint GetTick() => _tick;
+            public void SetTick(uint value) => _tick = value;
+            public void Dispose() { }
         }
 
         [SerializeField] private LayerMask _groundMask;
@@ -65,41 +39,15 @@ namespace DefaultNamespace
         
         [SerializeField] private PlayerMovementConfig _playerMovementConfig;
 
-        public Vector2 Velocity
-        {
-            get { return _rigidbody.linearVelocity; }
-        }
+        public Vector2 Velocity => _rigidbody.linearVelocity;
 
-        public bool Grounded
-        {
-            get
-            {
-                return Physics2D.Raycast(transform.position, Vector2.down, _playerMovementConfig._groundCheckDistance, _groundMask);
-            }
-        }
+        public bool Grounded => Physics2D.Raycast(transform.position, Vector2.down, _playerMovementConfig._groundCheckDistance, _groundMask);
 
         public float Health01 => Mathf.Clamp01(_health / _playerMovementConfig._maxHealth);
-        public bool HasSpeedBuff
-        {
-            get { return _buffTimer > 0f; }
-        }
-
-        public bool HasSlowDebuff
-        {
-            get { return _slowTimer > 0f; }
-        }
-
-        public bool HasSlowCharge
-        {
-            get { return _hasSlowCharge; }
-        }
 
         public event System.Action JumpFx;
 
-        private bool CanMove()
-        {
-            return _knockbackTimer <= 0 && _health > 0 && RaceManager.Instance.CurrentState is GameState.Race or GameState.Waiting;
-        }
+        private bool CanMove()=> _knockbackTimer <= 0 && _health > 0 && RaceManager.Instance.CurrentState is GameState.Race or GameState.Waiting;
 
         private PredictionRigidbody2D _predictionRigidbody;
         private PlayerControls _playerControls;
@@ -115,30 +63,7 @@ namespace DefaultNamespace
         private float _coyoteTimer;
         private bool _wasGrounded;
 
-        private float _buffTimer;
-        private float _slowTimer;
-        private float _slowChargeTimer;
-        private bool _hasSlowCharge;
-
         private Input _lastCreatedInput;
-
-        private float SpeedMultiplier
-        {
-            get
-            {
-                float multiplier = 1f;
-                if (_buffTimer > 0f)
-                {
-                    multiplier *= _playerMovementConfig._speedBuffMultiplier;
-                }
-
-                if (_slowTimer > 0f)
-                {
-                    multiplier *= _playerMovementConfig._slowDebuffMultiplier;
-                }
-                return multiplier;
-            }
-        }
 
         private void Awake()
         {
@@ -148,11 +73,6 @@ namespace DefaultNamespace
             _knockbackTimer = 0f;
             _health = _playerMovementConfig._maxHealth;
             _defaultLayer = gameObject.layer;
-
-            _buffTimer = 0f;
-            _slowTimer = 0f;
-            _slowChargeTimer = 0f;
-            _hasSlowCharge = false;
         }
 
         public override void OnStartNetwork()
@@ -275,31 +195,11 @@ namespace DefaultNamespace
                 _health = _playerMovementConfig._maxHealth;
             }
 
-            if (_buffTimer > 0f)
-            {
-                _buffTimer -= dt;
-            }
-
-            if (_slowTimer > 0f)
-            {
-                _slowTimer -= dt;
-            }
-            if (_hasSlowCharge)
-            {
-                _slowChargeTimer -= dt;
-                if (_slowChargeTimer <= 0f)
-                {
-                    _hasSlowCharge = false;
-                    _slowChargeTimer = 0f;
-                }
-            }
-
             if (CanMove())
             {
                 if (Mathf.Abs(input.Movement) > 0.01f)
                 {
-                    float baseSpeed = _playerMovementConfig._speed * SpeedMultiplier;
-                    float targetSpeed = input.Movement * baseSpeed;
+                    float targetSpeed = input.Movement * _playerMovementConfig._speed;
 
                     float acceleration = Grounded ? _playerMovementConfig._groundAcceleration : _playerMovementConfig._airAcceleration;
                     float newX = Mathf.MoveTowards(currentVelocity.x, targetSpeed, acceleration * dt);
@@ -353,11 +253,6 @@ namespace DefaultNamespace
                 KnockbackTimer = _knockbackTimer,
                 Health = _health,
                 CoyoteTimer = _coyoteTimer,
-
-                BuffTimer = _buffTimer,
-                SlowTimer = _slowTimer,
-                SlowChargeTimer = _slowChargeTimer,
-                HasSlowCharge = _hasSlowCharge
             };
             ReconcileState(state);
         }
@@ -369,11 +264,6 @@ namespace DefaultNamespace
             _health = state.Health;
             _coyoteTimer = state.CoyoteTimer;
             _predictionRigidbody.Reconcile(state.Rigidbody);
-
-            _buffTimer = state.BuffTimer;
-            _slowTimer = state.SlowTimer;
-            _slowChargeTimer = state.SlowChargeTimer;
-            _hasSlowCharge = state.HasSlowCharge;
         }
         
         private void Jump(ReplicateState state)
@@ -416,40 +306,6 @@ namespace DefaultNamespace
             _rigidbody.linearVelocity = Vector2.zero;
             _rigidbody.AddForce(direction * _playerMovementConfig._knockbackForce, ForceMode2D.Impulse);
             _knockbackTimer = .5f;
-        }
-        
-        [Server] public void ApplySpeedBuff(float duration)
-        {
-            _buffTimer = Mathf.Max(_buffTimer, duration);
-        }
-
-        [Server] public void ApplySlowDebuff(float duration)
-        {
-            _slowTimer = Mathf.Max(_slowTimer, duration);
-        }
-
-        [Server]
-        public void GrantSlowCharge(float window)
-        {
-            _hasSlowCharge = true;
-            _slowChargeTimer = Mathf.Max(_slowChargeTimer, window);
-        }
-        
-        private void OnCollisionEnter2D(Collision2D other)
-        {
-            if (!IsServerInitialized || !_hasSlowCharge)
-            {
-                return;
-            }
-            PlayerMovement target = other.collider.GetComponentInParent<PlayerMovement>();
-            if (target == null || target == this)
-            {
-                return;
-            }
-
-            target.ApplySlowDebuff(_playerMovementConfig._slowDebuffDuration);
-            _hasSlowCharge = false;
-            _slowChargeTimer = 0f;
         }
     }
 }

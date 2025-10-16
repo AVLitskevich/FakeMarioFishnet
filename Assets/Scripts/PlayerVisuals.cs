@@ -14,19 +14,15 @@ namespace DefaultNamespace
         private static readonly int VelY = Animator.StringToHash("VelY");
         private static readonly int SpeedX = Animator.StringToHash("SpeedX");
         
+        [SerializeField] private PlayerMovement _movement;
+        
         [SerializeField] private Animator _animator;
         [SerializeField] private SpriteRenderer _spriteRenderer;
         [SerializeField] private Image _hpBarImage;
         
         [SerializeField] private float _remoteDarkenMul = 0.7f;
         [SerializeField] private float _remoteAlpha = 0.9f;
-        
-        private PlayerMovement _movement;
-
-        private void Awake()
-        {
-            _movement = GetComponent<PlayerMovement>();
-        }
+      
 
         private void OnEnable()
         {
@@ -46,13 +42,13 @@ namespace DefaultNamespace
 
         private void Start()
         {
-            NetworkObject netObj = _movement.NetworkObject;
-            if (netObj != null && netObj.Owner.IsLocalClient)
+            NetworkObject networkObject = _movement.NetworkObject;
+            if (networkObject != null && networkObject.Owner.IsLocalClient)
             {
                 CinemachineCamera cine = FindAnyObjectByType<CinemachineCamera>(FindObjectsInactive.Include);
                 if (cine != null)
                 {
-                    cine.Target.TrackingTarget = netObj.GetGraphicalObject().transform;
+                    cine.Target.TrackingTarget = networkObject.GetGraphicalObject().transform;
                 }
             }
             else

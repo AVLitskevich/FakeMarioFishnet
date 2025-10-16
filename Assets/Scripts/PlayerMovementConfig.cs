@@ -17,13 +17,5 @@ namespace DefaultNamespace
         [SerializeField] public float _groundCheckDistance;
         [SerializeField] public float _coyoteTime;
         [SerializeField] public bool _predictInputs;
-        
-        [SerializeField] public float _speedBuffMultiplier = 1.35f;
-        [SerializeField] public float _speedBuffDuration = 3f;
-
-        [SerializeField] public float _slowDebuffMultiplier = 0.6f;
-        [SerializeField] public float _slowDebuffDuration = 2.5f;
-        [SerializeField] public float _slowChargeWindow = 6f;
-
     }
 }
