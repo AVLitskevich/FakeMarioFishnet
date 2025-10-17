@@ -1,11 +1,11 @@
 ﻿using FishNet.Component.Prediction;
-using FishNet.Utility.Template;
+using FishNet.Object;
 using Game.Player;
 using UnityEngine;
 
 namespace Game.Level
 {
-    public class ObstacleController : TickNetworkBehaviour
+    public class ObstacleController : NetworkBehaviour
     {
         [SerializeField] public float Damage;
         [SerializeField] private NetworkTrigger2D _trigger;
