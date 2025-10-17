@@ -5,7 +5,6 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
 using MultiplayerSDK.Common;
-using UnityEngine;
 using VContainer;
 
 namespace MultiplayerSDK.FishNetAdapter
@@ -69,7 +68,7 @@ namespace MultiplayerSDK.FishNetAdapter
             _playerData[clientId] = playerData;
         }
 
-        [ServerRpc(RequireOwnership = true)]
+        [ServerRpc(RequireOwnership = false)]
         private void UpdateData(PlayerData playerData, NetworkConnection connection = null)
         {
             if (connection == null)
@@ -93,8 +92,6 @@ namespace MultiplayerSDK.FishNetAdapter
                 OnPlayerUpdated?.Invoke(playerId, playerData);
             else if (op == SyncDictionaryOperation.Remove)
                 OnPlayerRemoved?.Invoke(playerId, playerData);
-            
-            Debug.Log($"Received player data update for {playerId}, operation: {op}, as server: {asServer}, data: {playerData.ToString()}");
         }
     }
 }

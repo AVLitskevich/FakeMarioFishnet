@@ -11,7 +11,6 @@ namespace Game.Player
 
         public void ClearInput()
         {
-            Movement = 0;
             Jump = false;
         }
 

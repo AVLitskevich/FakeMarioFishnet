@@ -12,15 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 263ba0c6afd64a2eacce0a289f21cd08, type: 3}
   m_Name: PlayerMovementConfig
   m_EditorClassIdentifier: 
-  _groundAcceleration: 100
-  _groundDeceleration: 40
-  _airAcceleration: 35
-  _airDeceleration: 35
-  _maxFallSpeed: 25
   _speed: 14
+  _groundAcceleration: 100
+  _groundDeceleration: 50
+  _airAcceleration: 35
+  _airDeceleration: 50
+  _maxFallSpeed: 25
   _jumpHeight: 8
+  _coyoteTime: 0.2
+  _groundCheckDistance: 1.5
+  _groundMask:
+    serializedVersion: 2
+    m_Bits: 1
   _maxHealth: 100
   _knockbackForce: 20
-  _groundCheckDistance: 1.5
-  _coyoteTime: 0.2
   _predictInputs: 1

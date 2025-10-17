@@ -17,7 +17,8 @@ namespace Game.Player
         [SerializeField] private SpriteRenderer _spriteRenderer;
         [SerializeField] private Image _hpBarImage;
         
-        [Header("Colors")]
+        [Header("Config")]
+        [SerializeField] private float _speedThreshold;
         [SerializeField] private float _remoteDarkenMul = 0.7f;
         [SerializeField] private float _remoteAlpha = 0.9f;
 
@@ -50,8 +51,8 @@ namespace Game.Player
         private void Update()
         {
             Vector2 vel = _movement.Velocity;
-            _animator.SetFloat(SpeedX, Mathf.Abs(vel.x));
-            _animator.SetFloat(VelY, Mathf.Abs(vel.y));
+            _animator.SetFloat(SpeedX, GetAbsWithThreshold(vel.x));
+            _animator.SetFloat(VelY, GetAbsWithThreshold(vel.y));
             _animator.SetBool(Grounded, _movement.IsGrounded);
 
             if (vel.x > 0.01f)
@@ -64,6 +65,15 @@ namespace Game.Player
             }
             
             _hpBarImage.fillAmount = _movement.Health01;
+        }
+
+        private float GetAbsWithThreshold(float value)
+        {
+            var speed = Mathf.Abs(value);
+            if (speed < _speedThreshold)
+                speed = 0;
+
+            return speed;
         }
         
         private void OnJumpFx()

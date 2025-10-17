@@ -230,6 +230,7 @@ MonoBehaviour:
   _animator: {fileID: 6542109632890407795}
   _spriteRenderer: {fileID: 5989835365424440178}
   _hpBarImage: {fileID: 7229179798304231293}
+  _speedThreshold: 0.1
   _remoteDarkenMul: 0.7
   _remoteAlpha: 0.9
 --- !u!1 &1828312104256193721
