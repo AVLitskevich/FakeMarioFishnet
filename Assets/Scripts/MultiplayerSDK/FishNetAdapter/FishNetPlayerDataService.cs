@@ -4,12 +4,11 @@ using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
-using MultiplayerSDK;
 using MultiplayerSDK.Common;
 using UnityEngine;
 using VContainer;
 
-namespace FishNetAdapter
+namespace MultiplayerSDK.FishNetAdapter
 {
     public class FishNetPlayerDataService : NetworkBehaviour
     {

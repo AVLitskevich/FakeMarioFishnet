@@ -1,13 +1,13 @@
-﻿using MultiplayerSDK.DI;
-using FishNet.Managing;
+﻿using FishNet.Managing;
 using FishNet.Transporting.UTP;
-using FishNetAdapter.PingService;
-using GameStateMachine.States;
+using Game.GameStateMachine.States;
+using MultiplayerSDK.DI;
+using MultiplayerSDK.FishNetAdapter.PingService;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace FishNetAdapter
+namespace MultiplayerSDK.FishNetAdapter
 {
     public class FishNetInstaller : MonoInstaller
     {

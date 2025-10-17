@@ -3,10 +3,11 @@ using MultiplayerSDK.Common;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace DefaultNamespace
+namespace Game
 {
     public class NetworkStarter : NetworkStarterBase
     {
+        [Header("Manual connection settings")]
         [SerializeField] private NetworkManager _networkManager;
         [SerializeField] private Button _startServerButton;
         [SerializeField] private Button _connectButton;

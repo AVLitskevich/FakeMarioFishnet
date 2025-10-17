@@ -1,4 +1,4 @@
-﻿namespace GameStateMachine
+﻿namespace Game.GameStateMachine
 {
     public enum GameStateType
     {

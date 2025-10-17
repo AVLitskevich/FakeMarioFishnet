@@ -1,6 +1,6 @@
 ﻿using MultiplayerSDK.StateMachine;
 
-namespace GameStateMachine.States
+namespace Game.GameStateMachine.States
 {
     public class WaitForPlayersState : NetworkState<GameStateType>
     {

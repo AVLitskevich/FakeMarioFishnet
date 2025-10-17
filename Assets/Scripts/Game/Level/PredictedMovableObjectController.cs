@@ -4,7 +4,7 @@ using FishNet.Utility.Template;
 using GameKit.Dependencies.Utilities;
 using UnityEngine;
 
-namespace DefaultNamespace
+namespace Game.Level
 {
     public class PredictedMovableObjectController : TickNetworkBehaviour
     {

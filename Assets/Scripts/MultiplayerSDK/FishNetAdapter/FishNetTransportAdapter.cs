@@ -7,7 +7,7 @@ using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace FishNetAdapter
+namespace MultiplayerSDK.FishNetAdapter
 {
     public class FishNetTransportAdapter : ITransportAdapter, IInitializable, IDisposable
     {

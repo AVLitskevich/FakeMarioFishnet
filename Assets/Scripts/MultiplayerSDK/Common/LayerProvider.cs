@@ -1,22 +1,18 @@
 ﻿using System.Collections.Generic;
-using FishNet.Managing;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace DefaultNamespace
+namespace MultiplayerSDK.Common
 {
     public class LayerProvider : NetworkBehaviour
     {
         public readonly SyncVar<bool> CollisionsState = new SyncVar<bool>(new SyncTypeSettings(writePermissions: WritePermission.ServerOnly));
         
-        public static LayerProvider Instance;
-
         [SerializeField] private bool _defaultCollisionsState;
         [SerializeField] private int _layerCount;
-        [SerializeField] private NetworkManager _networkManager;
         [SerializeField] private Button _toggleCollisionsButton;
         [SerializeField] private TMP_Text _collisionsStateText;
 
@@ -30,8 +26,6 @@ namespace DefaultNamespace
         
         private void Awake()
         {
-            Instance = this;
-            
             _availableLayerMasks = new Stack<int>();
             for (int i = 0; i < _layerCount; i++)
             {

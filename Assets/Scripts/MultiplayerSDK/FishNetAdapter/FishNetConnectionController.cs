@@ -4,7 +4,7 @@ using FishNet.Managing.Server;
 using MultiplayerSDK.Connection;
 using VContainer;
 
-namespace FishNetAdapter
+namespace MultiplayerSDK.FishNetAdapter
 {
     public class FishNetConnectionController : ConnectionControllerBase
     {

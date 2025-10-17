@@ -1,10 +1,9 @@
 ﻿using System.Linq;
-using FishNet.Object;
-using GameStateMachine.States;
+using Game.GameStateMachine.States;
 using MultiplayerSDK.StateMachine;
 using UnityEngine;
 
-namespace GameStateMachine
+namespace Game.GameStateMachine
 {
     public class GameStateMachine : NetworkStateMachine<GameStateType>
     {

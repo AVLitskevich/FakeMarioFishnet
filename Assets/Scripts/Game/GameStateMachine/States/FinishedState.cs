@@ -1,7 +1,7 @@
 ﻿using MultiplayerSDK.StateMachine;
 using UnityEngine;
 
-namespace GameStateMachine.States
+namespace Game.GameStateMachine.States
 {
     public class FinishedStateData
     {

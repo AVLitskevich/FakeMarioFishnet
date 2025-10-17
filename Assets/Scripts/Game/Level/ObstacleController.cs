@@ -1,8 +1,9 @@
 ﻿using FishNet.Component.Prediction;
 using FishNet.Utility.Template;
+using Game.Player;
 using UnityEngine;
 
-namespace DefaultNamespace
+namespace Game.Level
 {
     public class ObstacleController : TickNetworkBehaviour
     {
@@ -21,8 +22,8 @@ namespace DefaultNamespace
 
         private void OnTrigger(Collider2D obj)
         {
-            if (obj.TryGetComponent(out PlayerController playerController))
-                playerController.TakeDamage(this);
+            if (obj.TryGetComponent(out PlayerMovement movement))
+                movement.TakeDamage(this);
         }
     }
 }

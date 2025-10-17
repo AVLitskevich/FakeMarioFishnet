@@ -14,9 +14,11 @@ namespace MultiplayerSDK.Common
     
     public class NetworkStarterBase : MonoBehaviour
     {
+        [Header("Platform auto connection settings")]
         [SerializeField] private ConnectionMode _dedicatedServerMode;
         [SerializeField] private ConnectionMode _webGlMode;
         
+        [Header("Default connection settings")]
         [SerializeField] private ConnectionMode _connectionMode;
         [SerializeField] private ConnectionConfig _config;
 
@@ -54,10 +56,6 @@ namespace MultiplayerSDK.Common
         private IEnumerator WaitAndStart()
         {
             yield return null;
-            // int waitFrames = 2;
-            // while (waitFrames > 0)
-            // {
-            // }
 
             Debug.Log($"[NetworkStarterBase] Auto start connection: {_connectionMode}");
             if (_connectionMode == ConnectionMode.Server)

@@ -1,11 +1,8 @@
-using System;
-using FishNet.Object;
 using Unity.Cinemachine;
 using UnityEngine;
-using Unity.UI;
 using UnityEngine.UI;
 
-namespace DefaultNamespace
+namespace Game.Player
 {
     public class PlayerVisuals : MonoBehaviour
     {
@@ -14,41 +11,34 @@ namespace DefaultNamespace
         private static readonly int VelY = Animator.StringToHash("VelY");
         private static readonly int SpeedX = Animator.StringToHash("SpeedX");
         
+        [Header("References")]
         [SerializeField] private PlayerMovement _movement;
-        
         [SerializeField] private Animator _animator;
         [SerializeField] private SpriteRenderer _spriteRenderer;
         [SerializeField] private Image _hpBarImage;
         
+        [Header("Colors")]
         [SerializeField] private float _remoteDarkenMul = 0.7f;
         [SerializeField] private float _remoteAlpha = 0.9f;
-      
 
         private void OnEnable()
         {
-            if (_movement != null)
-            {
-                _movement.JumpFx += OnJumpFx;
-            }
+            _movement.JumpFx += OnJumpFx;
         }
 
         private void OnDisable()
         {
-            if (_movement != null)
-            {
-                _movement.JumpFx -= OnJumpFx;
-            }
+            _movement.JumpFx -= OnJumpFx;
         }
 
         private void Start()
         {
-            NetworkObject networkObject = _movement.NetworkObject;
-            if (networkObject != null && networkObject.Owner.IsLocalClient)
+            if (_movement.NetworkObject.Owner.IsLocalClient)
             {
-                CinemachineCamera cine = FindAnyObjectByType<CinemachineCamera>(FindObjectsInactive.Include);
-                if (cine != null)
+                CinemachineCamera targetCamera = FindAnyObjectByType<CinemachineCamera>(FindObjectsInactive.Include);
+                if (targetCamera != null)
                 {
-                    cine.Target.TrackingTarget = networkObject.GetGraphicalObject().transform;
+                    targetCamera.Target.TrackingTarget = transform;
                 }
             }
             else
@@ -62,7 +52,7 @@ namespace DefaultNamespace
             Vector2 vel = _movement.Velocity;
             _animator.SetFloat(SpeedX, Mathf.Abs(vel.x));
             _animator.SetFloat(VelY, Mathf.Abs(vel.y));
-            _animator.SetBool(Grounded, _movement.Grounded);
+            _animator.SetBool(Grounded, _movement.IsGrounded);
 
             if (vel.x > 0.01f)
             {
@@ -87,6 +77,7 @@ namespace DefaultNamespace
             {
                 return;
             }
+            
             Color c = _spriteRenderer.color;
             c *= _remoteDarkenMul;
             c.a = _remoteAlpha;

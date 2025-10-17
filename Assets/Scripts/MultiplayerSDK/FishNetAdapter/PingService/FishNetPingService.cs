@@ -5,7 +5,7 @@ using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace FishNetAdapter.PingService
+namespace MultiplayerSDK.FishNetAdapter.PingService
 {
     public class FishNetPingService : IInitializable, IDisposable
     {
