@@ -10,9 +10,6 @@ namespace MultiplayerSDK.StateMachine
         internal void SetStateMachine(NetworkStateMachine<TStateType> stateMachine);
         internal void CleanupStateMachine();
 
-        public bool CanEnter(TStateType prevState);
-        public bool CanExit(TStateType nextState);
-
         public void OnEnter(TStateType prevState);
         public void OnEnterWithData(TStateType prevState, string data);
         public void OnExit(TStateType nextState);
@@ -24,14 +21,13 @@ namespace MultiplayerSDK.StateMachine
         where TStateType : Enum
     {
         public abstract TStateType Type { get; }
-        
+
+        protected bool IsServer => StateMachine.IsServerInitialized;
+        protected bool IsClient => StateMachine.IsClientInitialized;
         protected NetworkStateMachine<TStateType> StateMachine { get; private set; }
 
         void INetworkState<TStateType>.SetStateMachine(NetworkStateMachine<TStateType> stateMachine) => StateMachine = stateMachine;
         void INetworkState<TStateType>.CleanupStateMachine() => StateMachine = null;
-
-        public virtual bool CanEnter(TStateType prevState) => true;
-        public virtual bool CanExit(TStateType nextState) => true;
 
         public virtual void OnEnter(TStateType prevState)
         {

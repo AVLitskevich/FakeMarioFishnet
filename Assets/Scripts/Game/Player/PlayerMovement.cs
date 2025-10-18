@@ -2,8 +2,11 @@ using FishNet.Object.Prediction;
 using FishNet.Transporting;
 using FishNet.Utility.Template;
 using Game.Level;
+using Game.StateMachine;
 using GameKit.Dependencies.Utilities;
+using MultiplayerSDK;
 using UnityEngine;
+using VContainer;
 
 namespace Game.Player
 {
@@ -16,6 +19,12 @@ namespace Game.Player
         public uint GetTick() => _tick;
         public void SetTick(uint value) => _tick = value;
         public void Dispose() { }
+
+        public void Reset()
+        {
+            Movement = 0f;
+            Jump = false;
+        }
     }
     
     public struct PlayerState : IReconcileData
@@ -38,13 +47,15 @@ namespace Game.Player
 
         public Vector2 Velocity => _rigidbody.linearVelocity;
         public float Health01 => Mathf.Clamp01(_health / _playerMovementConfig._maxHealth);
-        private bool CanMove => _knockbackTimer <= 0 && _health > 0;
+        private bool CanMove => _knockbackTimer <= 0 && _health > 0 && _gameStateMachine.CurrentState == GameStateType.Running;
         
         public bool IsGrounded { get; private set; }
 
         [SerializeField] private Rigidbody2D _rigidbody;
         [SerializeField] private PlayerInputReader _inputReader;
         [SerializeField] private PlayerMovementConfig _playerMovementConfig;
+
+        [Inject] private readonly GameStateMachine _gameStateMachine;
         
         private PredictionRigidbody2D _predictionRigidbody;
 
@@ -56,6 +67,7 @@ namespace Game.Player
 
         public override void OnStartNetwork()
         {
+            this.InjectToMe();
             _predictionRigidbody = ObjectCaches<PredictionRigidbody2D>.Retrieve();
             _predictionRigidbody.Initialize(_rigidbody);
 
@@ -137,7 +149,7 @@ namespace Game.Player
         private void Move(PlayerInput input, ReplicateState state, float dt)
         {
             if (!CanMove)
-                return;
+                input.Reset();
             
             Vector2 currentVelocity = _rigidbody.linearVelocity;
             if (Mathf.Abs(input.Movement) > 0.01f)

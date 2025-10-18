@@ -6,6 +6,7 @@
         public string Nickname;
         public long Ping;
         public bool IsReady;
+        public bool InGame;
 
         public PlayerData WithNickname(string nickname)
         {
@@ -22,6 +23,12 @@
         public PlayerData WithIsReady(bool isReady)
         {
             IsReady = isReady;
+            return this;
+        }
+
+        public PlayerData WithInGame(bool inGame)
+        {
+            InGame = inGame;
             return this;
         }
 

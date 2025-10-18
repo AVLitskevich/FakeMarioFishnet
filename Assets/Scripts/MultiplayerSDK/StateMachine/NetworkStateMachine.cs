@@ -39,11 +39,14 @@ namespace MultiplayerSDK.StateMachine
     public abstract class NetworkStateMachine<TStateType> : NetworkBehaviour
         where TStateType : Enum
     {
+        public TStateType CurrentState => _currentStateData.Value.GetType<TStateType>();
+        
         [Inject] private readonly IReadOnlyList<INetworkState<TStateType>> _states;
 
         private readonly SyncVar<StateData> _currentStateData = new(settings: new SyncTypeSettings(writePermissions: WritePermission.ServerOnly));
         private readonly EqualityComparer<TStateType> _comparer = EqualityComparer<TStateType>.Default;
-        
+
+        private INetworkState<TStateType> _currentState;
         private Dictionary<TStateType, INetworkState<TStateType>> _typedStates;
 
         public override void OnStartNetwork()
@@ -90,6 +93,11 @@ namespace MultiplayerSDK.StateMachine
             _currentStateData.OnChange -= OnStateChanged;
         }
 
+        protected virtual void Update()
+        {
+            _currentState?.Update();
+        }
+
         protected virtual void SetInitialState() { }
 
         protected void SetInitialStateInternal(TStateType stateType)
@@ -102,6 +110,7 @@ namespace MultiplayerSDK.StateMachine
             
             _currentStateData.SetInitialValues(new StateData().WithType(stateType));
             nextState.OnEnter(default);
+            _currentState = nextState;
         }
 
         protected void SetInitialStateInternal<T>(TStateType stateType, T data)
@@ -129,6 +138,7 @@ namespace MultiplayerSDK.StateMachine
             var jsonData = JsonConvert.SerializeObject(data);
             _currentStateData.SetInitialValues(new StateData().WithType(stateType).WithData(jsonData));
             nextState.OnEnterWithData(default, jsonData);
+            _currentState = nextState;
         }
 
         [Server]
@@ -179,23 +189,6 @@ namespace MultiplayerSDK.StateMachine
                 return;
             }
             
-            if (_typedStates.TryGetValue(_currentStateData.Value.GetType<TStateType>(), out var currentState))
-            {
-                try
-                {
-                    if (!currentState.CanExit(nextState.Type))
-                        return;
-
-                    if (!nextState.CanEnter(currentState.Type))
-                        return;
-                }
-                catch (Exception e)
-                {
-                    Debug.LogError($"[NetworkStateMachine] Error on checking state changes from {currentState.Type} to {nextState.Type}: {e}");
-                    return;
-                }
-            }
-            
             _currentStateData.Value = new StateData().WithData(jsonData).WithType(nextState.Type);
         }
 
@@ -213,12 +206,15 @@ namespace MultiplayerSDK.StateMachine
             if (_typedStates.TryGetValue(prevType, out var prevState))
                 prevState.OnExit(nextType);
 
+            _currentState = null;
             try
             {
                 if (!string.IsNullOrWhiteSpace(next.JsonData))
                     nextState.OnEnterWithData(prevType, next.JsonData);
                 else
                     nextState.OnEnter(prevType);
+
+                _currentState = nextState;
             }
             catch (Exception e)
             {

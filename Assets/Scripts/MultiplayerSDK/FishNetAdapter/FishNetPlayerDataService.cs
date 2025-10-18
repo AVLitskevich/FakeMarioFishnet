@@ -1,21 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
 using MultiplayerSDK.Common;
+using UnityEngine;
 using VContainer;
 
 namespace MultiplayerSDK.FishNetAdapter
 {
     public class FishNetPlayerDataService : NetworkBehaviour
     {
-        public event Action<int, PlayerData> OnPlayerAdded; 
-        public event Action<int, PlayerData> OnPlayerUpdated; 
-        public event Action<int, PlayerData> OnPlayerRemoved;
+        public delegate void PlayerEvent(int clientId, PlayerData playerData);
+        
+        public event PlayerEvent OnPlayerAdded; 
+        public event PlayerEvent OnPlayerUpdated; 
+        public event PlayerEvent OnPlayerRemoved;
 
         public IReadOnlyDictionary<int, PlayerData> PlayerData => _playerData;
+        public int LocalPlayerId => NetworkManager.ClientManager.Connection.ClientId;
 
         [Inject] private readonly GlobalGameData _globalGameData;
         
@@ -59,6 +62,7 @@ namespace MultiplayerSDK.FishNetAdapter
         [Client]
         public void SetDataOnLocalClient(PlayerData playerData)
         {
+            Debug.Log("Set local player data");
             UpdateData(playerData);
         }
 
@@ -74,7 +78,15 @@ namespace MultiplayerSDK.FishNetAdapter
             if (connection == null)
                 return;
 
+            // We need this, so players can't set InGame property from client. Only server should set this property
+            playerData.InGame = _playerData.TryGetValue(connection.ClientId, out var existingData) &&
+                                existingData.InGame;
+            
             playerData.PlayerId = connection.ClientId;
+            if (string.IsNullOrWhiteSpace(playerData.Nickname))
+                playerData.Nickname = $"Player_{playerData.PlayerId}";
+
+            Debug.Log("Set player data");
             _playerData[connection.ClientId] = playerData;
         }
 

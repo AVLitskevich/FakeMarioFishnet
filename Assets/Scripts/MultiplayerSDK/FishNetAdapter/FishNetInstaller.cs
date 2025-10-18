@@ -1,6 +1,6 @@
 ﻿using FishNet.Managing;
 using FishNet.Transporting.UTP;
-using Game.GameStateMachine.States;
+using Game.StateMachine.States;
 using MultiplayerSDK.DI;
 using MultiplayerSDK.FishNetAdapter.PingService;
 using UnityEngine;
@@ -25,10 +25,6 @@ namespace MultiplayerSDK.FishNetAdapter
 
             builder.RegisterEntryPoint<FishNetTransportAdapter>().AsSelf();
             builder.RegisterEntryPoint<FishNetPingService>();
-
-            builder.Register<WaitForPlayersState>(Lifetime.Singleton).AsImplementedInterfaces();
-            builder.Register<RunningState>(Lifetime.Singleton).AsImplementedInterfaces();
-            builder.Register<FinishedState>(Lifetime.Singleton).AsImplementedInterfaces();
         }
     }
 }
