@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace DefaultNamespace.Collectables
 {
-
     public enum CollectableType
     {
         Unknown = 0
@@ -13,9 +12,7 @@ namespace DefaultNamespace.Collectables
     {
         [SerializeField] private CollectableType _type = CollectableType.Unknown;
         public CollectableType Type => _type;
-        
         public bool Collected { get; private set; }
-        
         public virtual bool CanBeCollectedServer(PlayerCollector playerCollector) => !Collected && IsServerInitialized;
 
         public bool TryCollectServer(PlayerCollector playerCollector)
@@ -24,7 +21,6 @@ namespace DefaultNamespace.Collectables
             {
                 return false;
             }
-
             Collected = true;
             return true;
         }

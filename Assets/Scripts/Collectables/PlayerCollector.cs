@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace DefaultNamespace.Collectables
 {
-    
     [RequireComponent(typeof(Collider2D))]
     public class PlayerCollector : NetworkBehaviour
     {
@@ -14,11 +13,9 @@ namespace DefaultNamespace.Collectables
         {
             if (!IsServerInitialized) return;
             if (!other || !other.TryGetComponent(out CollectableBase collectable)) return;
-
             if (!collectable.TryCollectServer(this)) return;
             
             OnCollectedServer?.Invoke(this, collectable, collectable.Type);
-            
             collectable.OnCollectedServer(this);
         }
     }
