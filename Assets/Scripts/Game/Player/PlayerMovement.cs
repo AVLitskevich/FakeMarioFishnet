@@ -27,6 +27,17 @@ namespace Game.Player
         }
     }
     
+    [System.Serializable]
+    public struct RuntimeMoveValues
+    {
+        public float Speed;
+
+        public void ResetToConfig(PlayerMovementConfig cfg)
+        {
+            Speed = cfg._speed;
+        }
+    }
+    
     public struct PlayerState : IReconcileData
     {
         private uint _tick;
@@ -36,6 +47,7 @@ namespace Game.Player
         public float CoyoteTimer;
         public PredictionRigidbody2D Rigidbody;
             
+        public RuntimeMoveValues MoveValues;
         public uint GetTick() => _tick;
         public void SetTick(uint value) => _tick = value;
         public void Dispose() { }
@@ -48,6 +60,10 @@ namespace Game.Player
         public Vector2 Velocity => _rigidbody.linearVelocity;
         public float Health01 => Mathf.Clamp01(_health / _playerMovementConfig._maxHealth);
         private bool CanMove => _knockbackTimer <= 0 && _health > 0 && _gameStateMachine.CurrentState == GameStateType.Running;
+        
+        public RuntimeMoveValues GetRuntimeValues() => _moveValues;
+        public void SetRuntimeValues(RuntimeMoveValues v) => _moveValues = v;
+        public PlayerMovementConfig Config => _playerMovementConfig;
         
         public bool IsGrounded { get; private set; }
 
@@ -62,6 +78,8 @@ namespace Game.Player
         private float _health;
         private float _knockbackTimer;
         private float _coyoteTimer;
+        private RuntimeMoveValues _moveValues;
+
 
         private PlayerInput _lastCreatedInput;
 
@@ -73,6 +91,7 @@ namespace Game.Player
 
             _knockbackTimer = 0f;
             _health = _playerMovementConfig._maxHealth;
+            _moveValues.ResetToConfig(_playerMovementConfig);
         }
         
         public override void OnStopNetwork()
@@ -154,7 +173,7 @@ namespace Game.Player
             Vector2 currentVelocity = _rigidbody.linearVelocity;
             if (Mathf.Abs(input.Movement) > 0.01f)
             {
-                float targetSpeed = input.Movement * _playerMovementConfig._speed;
+                float targetSpeed = input.Movement * _moveValues.Speed;
 
                 float acceleration = IsGrounded ? _playerMovementConfig._groundAcceleration : _playerMovementConfig._airAcceleration;
                 float newX = Mathf.MoveTowards(currentVelocity.x, targetSpeed, acceleration * dt);
@@ -194,6 +213,7 @@ namespace Game.Player
                 KnockbackTimer = _knockbackTimer,
                 Health = _health,
                 CoyoteTimer = _coyoteTimer,
+                MoveValues = _moveValues,
             };
             ReconcileState(state);
         }
@@ -205,6 +225,7 @@ namespace Game.Player
             _knockbackTimer = state.KnockbackTimer;
             _health = state.Health;
             _coyoteTimer = state.CoyoteTimer;
+            _moveValues = state.MoveValues;
             _predictionRigidbody.Reconcile(state.Rigidbody);
         }
         
