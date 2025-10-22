@@ -38,7 +38,7 @@ namespace Game.Buffs
 
             _activeBuffs.OnChange -= OnActiveBuffsChanged;
 
-            if (IsServerInitialized && _collector != null)
+            if (IsServerInitialized)
             {
                 _collector.OnCollectedServer -= OnCollectedServer;
             }
