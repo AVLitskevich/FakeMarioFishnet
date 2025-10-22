@@ -6,7 +6,7 @@ namespace Game.Buffs
 {
     public class SpeedBuffPickup : CollectableBase
     {
-        [FormerlySerializedAs("_operation")] [SerializeField] private SpeedBuffType _buffType = SpeedBuffType.Multiply;
+        [SerializeField] private SpeedBuffType _buffType = SpeedBuffType.Multiply;
         [SerializeField] private float _value = 1.25f;
         [SerializeField] private float _duration = 5f;
         
