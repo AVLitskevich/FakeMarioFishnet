@@ -256,6 +256,8 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 4944023266038734634}
   _networkObjectCache: {fileID: 0}
+  _movement: {fileID: 8866073289841078330}
+  _collector: {fileID: 6550249093487379794}
 --- !u!1001 &2000453477535913599
 PrefabInstance:
   m_ObjectHideFlags: 0

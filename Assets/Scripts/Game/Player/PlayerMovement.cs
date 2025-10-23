@@ -63,6 +63,7 @@ namespace Game.Player
         
         public PlayerMovementConfig Config => _playerMovementConfig;
         
+        public RuntimeMoveValues MoveValues { get; set; }
         public bool IsGrounded { get; private set; }
 
         [SerializeField] private Rigidbody2D _rigidbody;
@@ -76,8 +77,6 @@ namespace Game.Player
         private float _health;
         private float _knockbackTimer;
         private float _coyoteTimer;
-        public RuntimeMoveValues MoveValues { get; set; }
-
 
         private PlayerInput _lastCreatedInput;
 
