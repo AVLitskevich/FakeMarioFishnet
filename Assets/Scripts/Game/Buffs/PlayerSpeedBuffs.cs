@@ -12,14 +12,8 @@ namespace Game.Buffs
     {
         private readonly SyncList<SpeedBuffData> _activeBuffs = new(new SyncTypeSettings(writePermissions: WritePermission.ServerOnly));
         
-        private PlayerMovement _movement;
-        private PlayerCollector _collector;
-        
-        private void Awake()
-        {
-            _movement = GetComponent<PlayerMovement>();
-            _collector = GetComponent<PlayerCollector>();
-        }
+        [SerializeField] private PlayerMovement _movement;
+        [SerializeField] private PlayerCollector _collector;
 
         public override void OnStartNetwork()
         {
@@ -68,7 +62,7 @@ namespace Game.Buffs
                 return;
             }
             
-            var data = SpeedBuffData.Create(pickup.BuffType, pickup.Value, pickup.Duration, Time.time);
+            var data = new SpeedBuffData(pickup.BuffType, pickup.Value, pickup.Duration, Time.time);
             
             _activeBuffs.Add(data);
         }
@@ -85,7 +79,7 @@ namespace Game.Buffs
                 return;
             }
             
-            var values = _movement.GetRuntimeValues();
+            var values = _movement.MoveValues;
             
             values.ResetToConfig(_movement.Config);
             
@@ -106,7 +100,7 @@ namespace Game.Buffs
             
             values.Speed = values.Speed * multiplier + addition;
             
-            _movement.SetRuntimeValues(values);
+            _movement.MoveValues = values;
         }
     }
 }

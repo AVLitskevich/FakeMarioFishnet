@@ -13,11 +13,11 @@ namespace DefaultNamespace.Collectables
         [SerializeField] private CollectableType _type = CollectableType.Unknown;
         public CollectableType Type => _type;
         public bool Collected { get; private set; }
-        public virtual bool CanBeCollectedServer(PlayerCollector playerCollector) => !Collected && IsServerInitialized;
+        public virtual bool CanBeCollectedServer(PlayerCollector playerCollector) => true;
 
         public bool TryCollectServer(PlayerCollector playerCollector)
         {
-            if (!IsServerInitialized || !CanBeCollectedServer(playerCollector))
+            if (!IsServerInitialized || Collected)
             {
                 return false;
             }

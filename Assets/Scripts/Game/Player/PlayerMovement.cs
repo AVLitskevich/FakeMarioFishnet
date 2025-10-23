@@ -61,8 +61,6 @@ namespace Game.Player
         public float Health01 => Mathf.Clamp01(_health / _playerMovementConfig._maxHealth);
         private bool CanMove => _knockbackTimer <= 0 && _health > 0 && _gameStateMachine.CurrentState == GameStateType.Running;
         
-        public RuntimeMoveValues GetRuntimeValues() => _moveValues;
-        public void SetRuntimeValues(RuntimeMoveValues v) => _moveValues = v;
         public PlayerMovementConfig Config => _playerMovementConfig;
         
         public bool IsGrounded { get; private set; }
@@ -78,7 +76,7 @@ namespace Game.Player
         private float _health;
         private float _knockbackTimer;
         private float _coyoteTimer;
-        private RuntimeMoveValues _moveValues;
+        public RuntimeMoveValues MoveValues { get; set; }
 
 
         private PlayerInput _lastCreatedInput;
@@ -91,7 +89,7 @@ namespace Game.Player
 
             _knockbackTimer = 0f;
             _health = _playerMovementConfig._maxHealth;
-            _moveValues.ResetToConfig(_playerMovementConfig);
+            MoveValues.ResetToConfig(_playerMovementConfig);
         }
         
         public override void OnStopNetwork()
@@ -173,7 +171,7 @@ namespace Game.Player
             Vector2 currentVelocity = _rigidbody.linearVelocity;
             if (Mathf.Abs(input.Movement) > 0.01f)
             {
-                float targetSpeed = input.Movement * _moveValues.Speed;
+                float targetSpeed = input.Movement * MoveValues.Speed;
 
                 float acceleration = IsGrounded ? _playerMovementConfig._groundAcceleration : _playerMovementConfig._airAcceleration;
                 float newX = Mathf.MoveTowards(currentVelocity.x, targetSpeed, acceleration * dt);
@@ -213,7 +211,7 @@ namespace Game.Player
                 KnockbackTimer = _knockbackTimer,
                 Health = _health,
                 CoyoteTimer = _coyoteTimer,
-                MoveValues = _moveValues,
+                MoveValues = MoveValues,
             };
             ReconcileState(state);
         }
@@ -225,7 +223,7 @@ namespace Game.Player
             _knockbackTimer = state.KnockbackTimer;
             _health = state.Health;
             _coyoteTimer = state.CoyoteTimer;
-            _moveValues = state.MoveValues;
+            MoveValues = state.MoveValues;
             _predictionRigidbody.Reconcile(state.Rigidbody);
         }
         

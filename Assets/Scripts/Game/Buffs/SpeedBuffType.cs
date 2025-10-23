@@ -12,7 +12,6 @@ namespace Game.Buffs
     [Serializable]
     public struct SpeedBuffData
     {
-        public int Id;
         public SpeedBuffType BuffType;
         public float Value;
         public float StartTime;
@@ -20,18 +19,13 @@ namespace Game.Buffs
 
         public float EndTime => StartTime + Duration;
         
-        private static int _nextId;
         
-        public static SpeedBuffData Create(SpeedBuffType buffType, float value, float duration, float startTime)
+        public SpeedBuffData(SpeedBuffType buffType, float value, float duration, float startTime)
         {
-            return new SpeedBuffData
-            {
-                Id = ++_nextId,
-                BuffType = buffType,
-                Value = value,
-                Duration = duration,
-                StartTime = startTime
-            };
+            BuffType = buffType;
+            Value = value;
+            Duration = duration;
+            StartTime = startTime;
         }
         
         public bool IsExpired(float now)
