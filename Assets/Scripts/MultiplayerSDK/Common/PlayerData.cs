@@ -4,7 +4,7 @@
     {
         public int PlayerId;
         public string Nickname;
-        public long Ping;
+        public int Ping;
         public bool IsReady;
         public bool InGame;
 
@@ -14,7 +14,7 @@
             return this;
         }
 
-        public PlayerData WithPing(long ping)
+        public PlayerData WithPing(int ping)
         {
             Ping = ping;
             return this;

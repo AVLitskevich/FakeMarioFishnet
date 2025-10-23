@@ -62,7 +62,6 @@ namespace MultiplayerSDK.FishNetAdapter
         [Client]
         public void SetDataOnLocalClient(PlayerData playerData)
         {
-            Debug.Log("Set local player data");
             UpdateData(playerData);
         }
 
@@ -86,7 +85,6 @@ namespace MultiplayerSDK.FishNetAdapter
             if (string.IsNullOrWhiteSpace(playerData.Nickname))
                 playerData.Nickname = $"Player_{playerData.PlayerId}";
 
-            Debug.Log("Set player data");
             _playerData[connection.ClientId] = playerData;
         }
 

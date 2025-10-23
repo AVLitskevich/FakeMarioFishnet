@@ -1,6 +1,12 @@
+using System;
+using MultiplayerSDK;
+using MultiplayerSDK.Common;
+using MultiplayerSDK.FishNetAdapter;
+using TMPro;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 
 namespace Game.Player
 {
@@ -16,20 +22,30 @@ namespace Game.Player
         [SerializeField] private Animator _animator;
         [SerializeField] private SpriteRenderer _spriteRenderer;
         [SerializeField] private Image _hpBarImage;
+        [SerializeField] private TMP_Text _nicknameText;
         
         [Header("Config")]
         [SerializeField] private float _speedThreshold;
         [SerializeField] private float _remoteDarkenMul = 0.7f;
         [SerializeField] private float _remoteAlpha = 0.9f;
 
+        [Inject] private readonly FishNetPlayerDataService _playerDataService;
+
+        private string _nickname;
+
         private void OnEnable()
         {
+            this.InjectToMe();
+            InitNickname();
+            
             _movement.JumpFx += OnJumpFx;
+            _playerDataService.OnPlayerUpdated += OnPlayerUpdated;
         }
 
         private void OnDisable()
         {
             _movement.JumpFx -= OnJumpFx;
+            _playerDataService.OnPlayerUpdated -= OnPlayerUpdated;
         }
 
         private void Start()
@@ -48,6 +64,18 @@ namespace Game.Player
             }
         }
 
+        private void InitNickname()
+        {
+            if (_movement == null || _movement.NetworkObject == null)
+                return;
+            
+            if (!_playerDataService.TryGetData(_movement.OwnerId, out var data))
+                return;
+
+            _nickname = data.Nickname;
+            _nicknameText.text = _nickname;
+        }
+        
         private void Update()
         {
             Vector2 vel = _movement.Velocity;
@@ -92,6 +120,18 @@ namespace Game.Player
             c *= _remoteDarkenMul;
             c.a = _remoteAlpha;
             _spriteRenderer.color = c;
+        }
+
+        private void OnPlayerUpdated(int clientId, PlayerData playerData)
+        {
+            if (_movement == null || _movement.OwnerId != clientId)
+                return;
+            
+            if (string.Equals(_nickname, playerData.Nickname, StringComparison.InvariantCulture))
+                return;
+
+            _nickname = playerData.Nickname;
+            _nicknameText.text = _nickname;
         }
     }
 }

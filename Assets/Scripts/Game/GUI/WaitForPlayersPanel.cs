@@ -7,11 +7,12 @@ namespace Game.GUI
 {
     public class WaitForPlayersPanel : MonoBehaviour
     {
-        public event Action<bool> OnReadyStateChanged;
+        public event Action<bool, string> OnReadyStateChanged;
         
         [SerializeField] private TMP_Text _othersReadyStateText;
         [SerializeField] private Button _readyButton;
         [SerializeField] private TMP_Text _readyButtonText;
+        [SerializeField] private TMP_InputField _nicknameInput;
 
         private bool _isReady;
         
@@ -31,7 +32,7 @@ namespace Game.GUI
         private void OnReadyClick()
         {
             _isReady = !_isReady;
-            OnReadyStateChanged?.Invoke(_isReady);
+            OnReadyStateChanged?.Invoke(_isReady, _nicknameInput.text);
         }
     }
 }

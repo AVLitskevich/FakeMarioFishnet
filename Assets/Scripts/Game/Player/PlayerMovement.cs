@@ -80,7 +80,7 @@ namespace Game.Player
             ObjectCaches<PredictionRigidbody2D>.StoreAndDefault(ref _predictionRigidbody);
         }
         
-        protected override void TimeManager_OnTick() => SimulateInputs(GetInput());
+        protected override void TimeManager_OnTick() => SimulateInputs(GetInput(), channel: Channel.Reliable);
 
         private PlayerInput GetInput()
         {

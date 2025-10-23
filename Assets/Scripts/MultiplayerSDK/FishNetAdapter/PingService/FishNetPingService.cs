@@ -56,7 +56,7 @@ namespace MultiplayerSDK.FishNetAdapter.PingService
         private void OnPingUpdated(long ping)
         {
             if (_playerDataService.TryGetLocalClientData(out var playerData))
-                _playerDataService.SetDataOnLocalClient(playerData.WithPing(ping));
+                _playerDataService.SetDataOnLocalClient(playerData.WithPing((int)_networkManager.TimeManager.RoundTripTime));
         }
     }
 }
