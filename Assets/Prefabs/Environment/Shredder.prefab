@@ -159,11 +159,11 @@ MonoBehaviour:
   NetworkObserver: {fileID: 0}
   _enablePrediction: 1
   _predictionType: 2
-  _graphicalObject: {fileID: 0}
+  _graphicalObject: {fileID: 1143083974775187690}
   _detachGraphicalObject: 0
   _enableStateForwarding: 1
   _networkTransform: {fileID: 0}
-  _ownerInterpolation: 1
+  _ownerInterpolation: 4
   _ownerSmoothedProperties: 255
   _adaptiveInterpolation: 6
   _spectatorSmoothedProperties: 255
@@ -194,7 +194,6 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 5039122664999532716}
   _networkObjectCache: {fileID: 0}
-  _tickCallbacks: 6
   Damage: 50
   _trigger: {fileID: 8155658178347754107}
 --- !u!114 &8155658178347754107
@@ -296,6 +295,7 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 5039122664999532716}
   _networkObjectCache: {fileID: 0}
   _tickCallbacks: 6
+  _debug: 0
   _oneSideMoveTime: 2
   _oneSideMoveCurve:
     serializedVersion: 2

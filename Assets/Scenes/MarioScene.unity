@@ -21700,7 +21700,7 @@ MonoBehaviour:
   _dedicatedServerMode: 2
   _webGlMode: 1
   _connectionMode: 0
-  _config: {fileID: 11400000, guid: 5fa8a9f51d08fac4eb687a64030b4d8e, type: 2}
+  _config: {fileID: 11400000, guid: 4005b0ff013f89644a5e23e586d77277, type: 2}
   _networkManager: {fileID: 1028377064}
   _startServerButton: {fileID: 1734752909}
   _connectButton: {fileID: 40239264}
@@ -23065,6 +23065,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca7d04c1a64e4ec4ac3b5b5bdd439149, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _layerProvider: {fileID: 692224120}
 --- !u!114 &1699503130
 MonoBehaviour:
   m_ObjectHideFlags: 0
