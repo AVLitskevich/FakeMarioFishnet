@@ -12,10 +12,13 @@ namespace Game.GUI.Debug
 
         private int _lastShownPing = -1;
         
-        public void SetUsername(string username)
+        public void SetUsername(string username, bool isLocalPlayer)
         {
-            _usernameText.text = username;
             Username = username;
+            if (isLocalPlayer)
+                username = $"[YOU] {username}";
+            
+            _usernameText.text = $"{username}:";
         }
         
         public void SetPing(int ping)
@@ -24,7 +27,7 @@ namespace Game.GUI.Debug
                 return;
             
             _lastShownPing = ping;
-            _pingText.text = $"{ping}";
+            _pingText.text = $"{ping}ms";
         }
     }
 }

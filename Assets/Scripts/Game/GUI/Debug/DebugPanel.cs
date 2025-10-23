@@ -72,7 +72,7 @@ namespace Game.GUI.Debug
             
             playerPingItem.SetPing(playerData.Ping);
             if (playerData.Nickname != playerPingItem.Username)
-                playerPingItem.SetUsername(playerData.Nickname);
+                playerPingItem.SetUsername(playerData.Nickname, clientId == _playerDataService.LocalPlayerId);
         }
 
         private void OnPlayerRemoved(int clientId, PlayerData playerData)
@@ -87,11 +87,7 @@ namespace Game.GUI.Debug
         private PlayerPingItem CreatePingItem(int clientId, PlayerData playerData)
         {
             var item = Instantiate(_pingItemPrefab, _pingsRoot);
-            string username = playerData.Nickname;
-            if (clientId == _playerDataService.LocalPlayerId)
-                username = $"[YOU] {username}";
-            
-            item.SetUsername(username);
+            item.SetUsername(playerData.Nickname, clientId == _playerDataService.LocalPlayerId);
             item.SetPing(playerData.Ping);
             _playerPingItems.Add(clientId, item);
             return item;

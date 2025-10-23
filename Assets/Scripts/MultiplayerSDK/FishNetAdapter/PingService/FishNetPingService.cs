@@ -17,7 +17,7 @@ namespace MultiplayerSDK.FishNetAdapter.PingService
         private struct PlayerRequestInfo
         {
             public bool Requested;
-            public uint RequestedTick;
+            public double RequestedTime;
         }
         
         [Inject] private readonly NetworkManager _networkManager;
@@ -98,7 +98,6 @@ namespace MultiplayerSDK.FishNetAdapter.PingService
             if (_networkManager.ServerManager.Clients.Count == 0)
                 return;
 
-            var currentTick = _networkManager.TimeManager.Tick;
             foreach (var client in _networkManager.ServerManager.Clients)
             {
                 if (!_playerRequests.TryGetValue(client.Key, out var playerRequestInfo))
@@ -111,7 +110,7 @@ namespace MultiplayerSDK.FishNetAdapter.PingService
 
                 if (playerRequestInfo.Requested)
                 {
-                    var passedTime = _networkManager.TimeManager.TicksToTime(currentTick - playerRequestInfo.RequestedTick);
+                    var passedTime = Time.timeAsDouble - playerRequestInfo.RequestedTime;
                     if (passedTime > PingIntervalSeconds)
                         playerRequestInfo.Requested = false;
                 }
@@ -120,7 +119,7 @@ namespace MultiplayerSDK.FishNetAdapter.PingService
                 {
                     _networkManager.ServerManager.Broadcast(client.Value, new PingRequestBroadcast());
                     playerRequestInfo.Requested = true;
-                    playerRequestInfo.RequestedTick = currentTick;
+                    playerRequestInfo.RequestedTime = Time.timeAsDouble;
                 }
 
                 _playerRequests[client.Key] = playerRequestInfo;
@@ -141,8 +140,8 @@ namespace MultiplayerSDK.FishNetAdapter.PingService
             if (!_playerRequests.TryGetValue(connection.ClientId, out var playerRequestInfo))
                 return;
             
-            var currentTick = _networkManager.TimeManager.Tick;
-            var ping = _networkManager.TimeManager.TicksToTime(currentTick - playerRequestInfo.RequestedTick);
+            var currentTime = Time.timeAsDouble;
+            var ping = currentTime - playerRequestInfo.RequestedTime;
             var pingInMs = Mathf.CeilToInt((float)ping * 1000f);
 
             if (_playerDataService.TryGetData(connection.ClientId, out var playerData))
