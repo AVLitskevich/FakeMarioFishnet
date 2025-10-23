@@ -1,62 +1,154 @@
 ﻿using System;
+using System.Collections.Generic;
+using FishNet.Connection;
 using FishNet.Managing;
+using FishNet.Transporting;
 using MultiplayerSDK.Connection;
+using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
 namespace MultiplayerSDK.FishNetAdapter.PingService
 {
-    public class FishNetPingService : IInitializable, IDisposable
+    public class FishNetPingService : IInitializable, ITickable, IDisposable
     {
+        private const float PingIntervalSeconds = 1f;
+        
+        private struct PlayerRequestInfo
+        {
+            public bool Requested;
+            public uint RequestedTick;
+        }
+        
         [Inject] private readonly NetworkManager _networkManager;
         [Inject] private readonly IConnectionController _connectionController;
         [Inject] private readonly FishNetPlayerDataService _playerDataService;
 
         private bool _subscribed;
+        private Dictionary<int, PlayerRequestInfo> _playerRequests;
         
         public void Initialize()
         {
             _connectionController.OnStateChanged += OnConnectionStateChanged;
-            if (_connectionController.ConnectionState == ConnectionState.Connected)
+            if (_connectionController.ConnectionState.IsConnectedOrHosting())
             {
-                _networkManager.TimeManager.OnRoundTripTimeUpdated += OnPingUpdated;
-                _subscribed = true;
+                Subscribe();
+                
+                if (_connectionController.ConnectionState == ConnectionState.Hosting)
+                    _playerRequests = new Dictionary<int, PlayerRequestInfo>();
             }
+        }
+
+        private void OnConnectionStateChanged(ConnectionState state)
+        {
+            if (state.IsConnectedOrHosting())
+            {
+                Subscribe();
+                
+                if (state == ConnectionState.Hosting)
+                    _playerRequests = new Dictionary<int, PlayerRequestInfo>();
+            }
+            else
+            {
+                Unsubscribe();
+                _playerRequests = null;
+            }
+        }
+
+        private void Subscribe()
+        {
+            if (_subscribed)
+                return;
+            
+            if (_networkManager.ServerManager != null)
+                _networkManager.ServerManager.RegisterBroadcast<PingResponseBroadcast>(OnPingResponse);
+                
+            if (_networkManager.ClientManager != null)
+                _networkManager.ClientManager.RegisterBroadcast<PingRequestBroadcast>(OnPingRequest);
+                
+            _subscribed = true;
         }
 
         public void Dispose()
         {
             _connectionController.OnStateChanged -= OnConnectionStateChanged;
+            _playerRequests = null;
+            Unsubscribe();
+        }
+
+        private void Unsubscribe()
+        {
+            if (!_subscribed)
+                return;
             
-            if (_networkManager.TimeManager != null)
-                _networkManager.TimeManager.OnRoundTripTimeUpdated -= OnPingUpdated;
-                
+            if (_networkManager.ServerManager != null)
+                _networkManager.ServerManager.UnregisterBroadcast<PingResponseBroadcast>(OnPingResponse);
+            
+            if (_networkManager.ClientManager != null)
+                _networkManager.ClientManager.UnregisterBroadcast<PingRequestBroadcast>(OnPingRequest);
+            
             _subscribed = false;
         }
 
-        private void OnConnectionStateChanged(ConnectionState state)
+        public void Tick()
         {
-            if (state == ConnectionState.Connected)
+            if (!_networkManager.IsServerStarted || _playerRequests == null)
+                return;
+
+            if (_networkManager.ServerManager.Clients.Count == 0)
+                return;
+
+            var currentTick = _networkManager.TimeManager.Tick;
+            foreach (var client in _networkManager.ServerManager.Clients)
             {
-                if (!_subscribed)
+                if (!_playerRequests.TryGetValue(client.Key, out var playerRequestInfo))
                 {
-                    _networkManager.TimeManager.OnRoundTripTimeUpdated += OnPingUpdated;
-                    _subscribed = true;
+                    playerRequestInfo = new PlayerRequestInfo
+                    {
+                        Requested = false
+                    };
                 }
-            }
-            else
-            {
-                if (_networkManager.TimeManager != null)
-                    _networkManager.TimeManager.OnRoundTripTimeUpdated -= OnPingUpdated;
-                
-                _subscribed = false;
+
+                if (playerRequestInfo.Requested)
+                {
+                    var passedTime = _networkManager.TimeManager.TicksToTime(currentTick - playerRequestInfo.RequestedTick);
+                    if (passedTime > PingIntervalSeconds)
+                        playerRequestInfo.Requested = false;
+                }
+
+                if (!playerRequestInfo.Requested)
+                {
+                    _networkManager.ServerManager.Broadcast(client.Value, new PingRequestBroadcast());
+                    playerRequestInfo.Requested = true;
+                    playerRequestInfo.RequestedTick = currentTick;
+                }
+
+                _playerRequests[client.Key] = playerRequestInfo;
             }
         }
 
-        private void OnPingUpdated(long ping)
+        private void OnPingRequest(PingRequestBroadcast broadcast, Channel channel)
         {
-            if (_playerDataService.TryGetLocalClientData(out var playerData))
-                _playerDataService.SetDataOnLocalClient(playerData.WithPing((int)_networkManager.TimeManager.RoundTripTime));
+            if (_networkManager.IsClientStarted)
+                _networkManager.ClientManager.Broadcast(new PingResponseBroadcast());
+        }
+
+        private void OnPingResponse(NetworkConnection connection, PingResponseBroadcast broadcast, Channel channel)
+        {
+            if (!_networkManager.IsServerStarted || _playerRequests == null)
+                return;
+            
+            if (!_playerRequests.TryGetValue(connection.ClientId, out var playerRequestInfo))
+                return;
+            
+            var currentTick = _networkManager.TimeManager.Tick;
+            var ping = _networkManager.TimeManager.TicksToTime(currentTick - playerRequestInfo.RequestedTick);
+            var pingInMs = Mathf.CeilToInt((float)ping * 1000f);
+
+            if (_playerDataService.TryGetData(connection.ClientId, out var playerData))
+                _playerDataService.SetDataOnServer(playerData.WithPing(pingInMs), connection.ClientId);
+            
+            playerRequestInfo.Requested = false;
         }
     }
 }

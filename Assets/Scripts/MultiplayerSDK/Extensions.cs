@@ -1,4 +1,5 @@
-﻿using MultiplayerSDK.DI;
+﻿using MultiplayerSDK.Connection;
+using MultiplayerSDK.DI;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -22,5 +23,8 @@ namespace MultiplayerSDK
             if (ContainerSingletonWrapper.Instance != null)
                 ContainerSingletonWrapper.Instance.Resolver.Inject(target);
         }
+
+        public static bool IsConnectedOrHosting(this ConnectionState connectionState) =>
+            connectionState is ConnectionState.Connected or ConnectionState.Hosting;
     }
 }
