@@ -107,8 +107,6 @@ namespace Game.Player
 
             var input = new PlayerInput { Movement = _inputReader.Movement, Jump = _inputReader.Jump };
             
-            Debug.Log($"GetInput - Jump: {input.Jump}, Movement: {input.Movement}");
-            
             _inputReader.ClearInput();
             return input;
         }
@@ -169,7 +167,6 @@ namespace Game.Player
             if (!CanMove)
                 input.Reset();
             
-            Debug.Log($"Move - Jump: {input.Jump}, Grounded: {IsGrounded}, Coyote: {_coyoteTimer}");
             
             Vector2 currentVelocity = _rigidbody.linearVelocity;
             if (Mathf.Abs(input.Movement) > 0.01f)
@@ -190,7 +187,6 @@ namespace Game.Player
             if (input.Jump && (IsGrounded || _coyoteTimer > 0f))
             {
                 Jump(state);
-                Debug.Log("JUMP EXECUTED!");
             }
         }
 

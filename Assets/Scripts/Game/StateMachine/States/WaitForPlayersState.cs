@@ -109,6 +109,8 @@ namespace Game.StateMachine.States
                 return;
             
             _playerDataService.SetDataOnLocalClient(data.WithIsReady(isReady));
+            
+            
         }
     }
 }

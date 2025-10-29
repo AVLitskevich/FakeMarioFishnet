@@ -194,6 +194,7 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 5495940997801683735}
   _networkObjectCache: {fileID: 0}
   _type: 0
+  _respawnPrefab: {fileID: 5495940997801683735}
   _buffType: 1
   _value: 1.25
   _duration: 5

@@ -11,10 +11,20 @@ namespace DefaultNamespace.Collectables
     public class CollectableBase : NetworkBehaviour
     {
         [SerializeField] private CollectableType _type = CollectableType.Unknown;
+        [SerializeField] private NetworkObject _respawnPrefab;
+        
+        private Vector3 _startPosition;
+        private Quaternion _startRotation;
         public CollectableType Type => _type;
+        public NetworkObject RespawnPrefab => _respawnPrefab;
         public bool Collected { get; private set; }
-        public virtual bool CanBeCollectedServer(PlayerCollector playerCollector) => true;
 
+        public override void OnStartServer()
+        {
+            _startPosition = transform.position;
+            _startRotation = transform.rotation;
+        }
+        
         public bool TryCollectServer(PlayerCollector playerCollector)
         {
             if (!IsServerInitialized || Collected)
@@ -27,7 +37,10 @@ namespace DefaultNamespace.Collectables
         
         public virtual void OnCollectedServer(PlayerCollector playerCollector)
         {
-            if (!IsServerInitialized) return;
+            if (!IsServerInitialized)
+            {
+                return;
+            }
 
             if (NetworkObject != null && NetworkObject.IsSpawned)
             {
@@ -37,6 +50,14 @@ namespace DefaultNamespace.Collectables
             {
                 Destroy(gameObject);
             }
+        }
+        
+        [Server]
+        public void ResetForRespawn()
+        {
+            Collected = false;
+            transform.SetPositionAndRotation(_startPosition, _startRotation);
+            gameObject.SetActive(true);
         }
     }
 }
