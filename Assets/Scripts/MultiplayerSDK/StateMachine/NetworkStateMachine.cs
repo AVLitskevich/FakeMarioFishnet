@@ -57,7 +57,6 @@ namespace MultiplayerSDK.StateMachine
             _typedStates = _states.ToDictionary(x => x.Type);
             foreach (var state in _states)
             {
-                Debug.Log($"[NetworkStateMachine] Initialize game state {state.Type}");
                 state.SetStateMachine(this);
             }
             
@@ -66,7 +65,6 @@ namespace MultiplayerSDK.StateMachine
             if (!IsServerInitialized)
             {
                 var currentStateType = _currentStateData.Value.GetType<TStateType>();
-                Debug.Log($"[NetworkStateMachine] Initialize first state on client: {currentStateType}");
                 if (!_typedStates.TryGetValue(currentStateType, out var initState))
                 {
                     Debug.LogError($"[NetworkStateMachine] Error initializing first state on client: {currentStateType}, no state found");
@@ -196,7 +194,12 @@ namespace MultiplayerSDK.StateMachine
         {
             var prevType = prev.GetType<TStateType>();
             var nextType = next.GetType<TStateType>();
-            Debug.Log($"[NetworkStateMachine] On state changed from {prevType} to {nextType}");
+            
+            if (!string.IsNullOrWhiteSpace(next.JsonData))
+                Debug.Log($"[NetworkStateMachine] On state changed from {prevType} to {nextType}, data: {next.JsonData}");
+            else
+                Debug.Log($"[NetworkStateMachine] On state changed from {prevType} to {nextType}");
+            
             if (!_typedStates.TryGetValue(nextType, out var nextState))
             {
                 Debug.LogError($"[NetworkStateMachine] Received state changed on not registered state: {next.Type}");
