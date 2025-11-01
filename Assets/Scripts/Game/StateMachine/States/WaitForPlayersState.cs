@@ -23,6 +23,12 @@ namespace Game.StateMachine.States
             base.OnEnter(prevState);
             _playerDataService.OnPlayerUpdated += OnPlayerUpdated;
 
+            if (IsServer)
+            {
+                ClearReadyStateForPlayers();
+                _playerSpawner.DespawnAllPlayers();
+            }
+
             if (IsClient)
             {
                 _gameUi.WaitForPlayersPanel.gameObject.SetActive(true);
@@ -49,9 +55,7 @@ namespace Game.StateMachine.States
                 return;
             
             if (IsClient)
-            {
                 UpdateUi();
-            }
             
             if (IsServer)
             {
@@ -72,6 +76,22 @@ namespace Game.StateMachine.States
                 _playerSpawner.SpawnAllInGamePlayers();
                 StateMachine.SetStateServer(GameStateType.Countdown);
             }
+        }
+
+        private void ClearReadyStateForPlayers()
+        {
+            using var playersPooled = ListPool<(int, PlayerData)>.Get(out var players);
+            foreach (var entry in _playerDataService.PlayerData)
+            {
+                players.Add((entry.Key, entry.Value));
+            }
+            
+            _skipUpdate = true;
+            foreach (var (playerId, playerData) in players)
+            {
+                _playerDataService.SetDataOnServer(playerData.WithInGame(false).WithIsReady(false), playerId);
+            }
+            _skipUpdate = false;
         }
 
         private void SetReadyPlayersInGame()

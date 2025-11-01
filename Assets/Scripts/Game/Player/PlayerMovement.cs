@@ -110,7 +110,7 @@ namespace Game.Player
         
         [Replicate]
         // ReSharper disable once UnusedParameter.Local
-        private void SimulateInputs(PlayerInput input, ReplicateState state = ReplicateState.Invalid, Channel channel = Channel.Unreliable)
+        private void SimulateInputs(PlayerInput input, ReplicateState state = ReplicateState.Invalid, Channel channel = Channel.Reliable)
         {
             if (state.IsFuture())
             {
@@ -212,12 +212,12 @@ namespace Game.Player
                 CoyoteTimer = _coyoteTimer,
                 MoveValues = MoveValues,
             };
-            ReconcileState(state);
+            ReconcileState(state, Channel.Reliable);
         }
         
         [Reconcile]
         // ReSharper disable once UnusedParameter.Local
-        private void ReconcileState(PlayerState state, Channel channel = Channel.Unreliable)
+        private void ReconcileState(PlayerState state, Channel channel = Channel.Reliable)
         {
             _knockbackTimer = state.KnockbackTimer;
             _health = state.Health;

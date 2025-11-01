@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 14
   _groundAcceleration: 100
-  _groundDeceleration: 50
-  _airAcceleration: 35
-  _airDeceleration: 50
+  _groundDeceleration: 80
+  _airAcceleration: 100
+  _airDeceleration: 80
   _maxFallSpeed: 25
   _jumpHeight: 8
   _coyoteTime: 0.2
