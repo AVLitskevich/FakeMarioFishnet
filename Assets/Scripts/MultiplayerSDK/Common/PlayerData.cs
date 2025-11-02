@@ -2,7 +2,9 @@
 {
     public struct PlayerData
     {
-        public int PlayerId;
+        public int NetworkPlayerId;
+        public string UserId;
+        public string MatchId;
         public string Nickname;
         public int Ping;
         public bool IsReady;
@@ -20,6 +22,18 @@
             return this;
         }
 
+        public PlayerData WithUserId(string userId)
+        {
+            UserId = userId;
+            return this;
+        }
+
+        public PlayerData WithMatchId(string matchId)
+        {
+            MatchId = matchId;
+            return this;
+        }
+
         public PlayerData WithIsReady(bool isReady)
         {
             IsReady = isReady;
@@ -34,7 +48,7 @@
 
         public override string ToString()
         {
-            return $"[{Nickname} - {PlayerId}] ping: {Ping}ms, isReady: {IsReady}";
+            return $"[{Nickname} - {NetworkPlayerId}] ping: {Ping}ms, isReady: {IsReady}, matchId: {MatchId}, userId: {UserId}";
         }
     }
 }

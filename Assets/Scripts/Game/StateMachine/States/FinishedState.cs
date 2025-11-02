@@ -1,6 +1,7 @@
 ﻿using Game.GUI;
 using MultiplayerSDK.FishNetAdapter;
 using MultiplayerSDK.StateMachine;
+using MultiplayerSDK.WebRequests;
 using UnityEngine;
 using VContainer;
 
@@ -14,8 +15,8 @@ namespace Game.StateMachine.States
     
     public class FinishedStateData
     {
-        public int WinnerId;
-        public FinishReason FinishReason;
+        public readonly int WinnerId;
+        public readonly FinishReason FinishReason;
 
         public FinishedStateData(int winnerId, FinishReason finishReason)
         {
@@ -30,6 +31,7 @@ namespace Game.StateMachine.States
 
         [Inject] private readonly GameUi _gameUi;
         [Inject] private readonly GameConfig _gameConfig;
+        [Inject] private readonly WebRequester _webRequester;
         [Inject] private readonly PlayerSpawner _playerSpawner;
         [Inject] private readonly FishNetPlayerDataService _playerDataService;
 
@@ -40,11 +42,17 @@ namespace Game.StateMachine.States
             base.OnEnter(prevState, data);
             _timer = _gameConfig.WaitAfterFinishSeconds;
 
+            if (!TryValidateMatchIds())
+                Debug.LogError("MatchId is invalid");
+            
             if (IsClient)
                 InitUi(data);
             
             if (IsServer)
+            {
+                SendWinnerToBackend(data.WinnerId);
                 _playerSpawner.DespawnAllPlayers();
+            }
         }
 
         public override void OnExit(GameStateType nextState)
@@ -61,6 +69,43 @@ namespace Game.StateMachine.States
 
             if (IsServer && _timer <= 0)
                 StateMachine.SetStateServer(GameStateType.WaitForPlayers);
+        }
+
+        private bool TryValidateMatchIds()
+        {
+            string matchId = null;
+            foreach (var playerData in _playerDataService.PlayerData.Values)
+            {
+                Debug.Log($"Processing player {playerData.NetworkPlayerId} on finish: {playerData.ToString()}");
+                if (string.IsNullOrEmpty(playerData.MatchId))
+                {
+                    Debug.Log($"Player {playerData.NetworkPlayerId}-{playerData.UserId} matchId is null");
+                    continue;
+                }
+                
+                if (string.IsNullOrEmpty(matchId))
+                {
+                    matchId = playerData.MatchId;
+                }
+                else if (!string.Equals(matchId, playerData.MatchId))
+                {
+                    Debug.Log($"Players matchId is different: first {matchId}, second: {playerData.MatchId}");
+                    return false;
+                }
+            }
+            
+            return matchId != null;
+        }
+
+        private void SendWinnerToBackend(int winnerId)
+        {
+            if (winnerId == 0 || !_playerDataService.TryGetData(winnerId, out var playerData))
+            {
+                Debug.Log($"Don't send winner, id: {winnerId}");
+                return;
+            }
+
+            _webRequester.SendWinner(playerData.MatchId, playerData.UserId);
         }
 
         private void InitUi(FinishedStateData data)

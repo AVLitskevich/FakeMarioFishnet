@@ -1,10 +1,15 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using JetBrains.Annotations;
+using MultiplayerSDK.WebBridge;
+using Newtonsoft.Json;
 using UnityEngine;
 
 // ReSharper disable once CheckNamespace
 public class WebBridge : MonoBehaviour
 {
+    public event Action<WebPayload> OnPayloadReceived;
+    
     [UsedImplicitly]
     [DllImport("__Internal")]
     private static extern void GameLoaded();
@@ -45,5 +50,14 @@ public class WebBridge : MonoBehaviour
     private void SetPlayerState(string json)
     {
         Debug.Log($"Player state: {json}");
+        try
+        {
+            var payload = JsonConvert.DeserializeObject<WebPayload>(json);
+            OnPayloadReceived?.Invoke(payload);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[WebBridge] Error on parsing payload: {e}");
+        }
     }
 }

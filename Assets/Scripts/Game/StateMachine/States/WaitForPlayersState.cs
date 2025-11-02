@@ -128,11 +128,10 @@ namespace Game.StateMachine.States
             if (!_playerDataService.TryGetLocalClientData(out var data))
                 return;
             
-            if (!string.IsNullOrWhiteSpace(nickname))
-                data.Nickname = nickname;
+            // if (!string.IsNullOrWhiteSpace(nickname))
+            //     data.Nickname = nickname;
             
-            data.IsReady = isReady;
-            _playerDataService.SetDataOnLocalClient(data);
+            _playerDataService.SetDataOnLocalClient(data.WithIsReady(isReady));
         }
     }
 }

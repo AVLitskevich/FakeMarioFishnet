@@ -1,6 +1,8 @@
-﻿using Game.GUI;
+﻿using System;
+using Game.GUI;
 using Game.Level;
 using MultiplayerSDK.StateMachine;
+using MultiplayerSDK.WebRequests;
 using VContainer;
 
 namespace Game.StateMachine.States
@@ -12,6 +14,7 @@ namespace Game.StateMachine.States
         [Inject] private readonly GameUi _gameUi;
         [Inject] private readonly FinishLine _finishLine;
         [Inject] private readonly PlayerSpawner _playerSpawner;
+        [Inject] private readonly WebRequester _webRequester;
 
         public override void OnEnter(GameStateType prevState)
         {
@@ -24,6 +27,8 @@ namespace Game.StateMachine.States
             {
                 _playerSpawner.SpawnAllInGamePlayers();
                 _finishLine.OnPlayerReachedFinish += OnPlayerFinished;
+                
+                _webRequester.SendWinner(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
             }
         }
 

@@ -937,6 +937,54 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5671676580032923186, guid: dd0e99bd4ef266a4498228dffbe9e699, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5671676580032923186, guid: dd0e99bd4ef266a4498228dffbe9e699, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5671676580032923186, guid: dd0e99bd4ef266a4498228dffbe9e699, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5671676580032923186, guid: dd0e99bd4ef266a4498228dffbe9e699, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5671676580032923186, guid: dd0e99bd4ef266a4498228dffbe9e699, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5671676580032923186, guid: dd0e99bd4ef266a4498228dffbe9e699, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9063695638316873036, guid: dd0e99bd4ef266a4498228dffbe9e699, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9063695638316873036, guid: dd0e99bd4ef266a4498228dffbe9e699, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9063695638316873036, guid: dd0e99bd4ef266a4498228dffbe9e699, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9063695638316873036, guid: dd0e99bd4ef266a4498228dffbe9e699, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9063695638316873036, guid: dd0e99bd4ef266a4498228dffbe9e699, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9063695638316873036, guid: dd0e99bd4ef266a4498228dffbe9e699, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -21744,7 +21792,7 @@ MonoBehaviour:
   _dedicatedServerMode: 2
   _webGlMode: 1
   _connectionMode: 0
-  _config: {fileID: 11400000, guid: 2223c51cd654d2f45bda69a099d93556, type: 2}
+  _config: {fileID: 11400000, guid: 4005b0ff013f89644a5e23e586d77277, type: 2}
   _networkManager: {fileID: 1028377064}
   _startServerButton: {fileID: 1734752909}
   _connectButton: {fileID: 40239264}

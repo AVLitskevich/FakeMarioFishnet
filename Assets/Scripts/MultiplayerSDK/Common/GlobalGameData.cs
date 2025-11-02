@@ -2,7 +2,8 @@
 {
     public class GlobalGameData
     {
+        public string MatchId;
         public string Nickname;
-        public int SelectedSkin; // Unused for now
+        public string PlayerId;
     }
 }

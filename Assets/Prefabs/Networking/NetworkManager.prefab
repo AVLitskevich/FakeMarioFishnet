@@ -72,7 +72,7 @@ MonoBehaviour:
   _dropExcessiveReplicates: 1
   _maximumServerReplicates: 30
   _createLocalStates: 1
-  _stateInterpolation: 0
+  _stateInterpolation: 1
   _stateOrder: 0
 --- !u!114 &6248397851354379535
 MonoBehaviour:

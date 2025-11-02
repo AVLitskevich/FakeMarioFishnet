@@ -4,7 +4,6 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
 using MultiplayerSDK.Common;
-using UnityEngine;
 using VContainer;
 
 namespace MultiplayerSDK.FishNetAdapter
@@ -40,6 +39,8 @@ namespace MultiplayerSDK.FishNetAdapter
                 {
                     IsReady = false,
                     Nickname = _globalGameData.Nickname,
+                    UserId = _globalGameData.PlayerId,
+                    MatchId = _globalGameData.MatchId,
                 });
             }
         }
@@ -81,9 +82,9 @@ namespace MultiplayerSDK.FishNetAdapter
             playerData.InGame = _playerData.TryGetValue(connection.ClientId, out var existingData) &&
                                 existingData.InGame;
             
-            playerData.PlayerId = connection.ClientId;
+            playerData.NetworkPlayerId = connection.ClientId;
             if (string.IsNullOrWhiteSpace(playerData.Nickname))
-                playerData.Nickname = $"Player_{playerData.PlayerId}";
+                playerData.Nickname = $"Player_{playerData.NetworkPlayerId}";
 
             _playerData[connection.ClientId] = playerData;
         }
