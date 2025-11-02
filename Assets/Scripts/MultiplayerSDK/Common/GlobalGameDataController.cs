@@ -1,7 +1,7 @@
-﻿using System;
-using MultiplayerSDK.Connection;
+﻿using MultiplayerSDK.Connection;
 using MultiplayerSDK.FishNetAdapter;
 using MultiplayerSDK.WebBridge;
+using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
@@ -23,6 +23,7 @@ namespace MultiplayerSDK.Common
 
         private void ProcessPayload(WebPayload payload)
         {
+            Debug.Log($"Received payload: matchId: {payload.MatchId}, playerId: {payload.PlayerId}, nickname: {payload.Nickname}");
             if (_playerDataService.TryGetLocalClientData(out var data))
             {
                 _playerDataService.SetDataOnLocalClient(data

@@ -2,8 +2,10 @@
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Game;
 using Newtonsoft.Json;
 using UnityEngine;
+using VContainer;
 
 namespace MultiplayerSDK.WebRequests
 {
@@ -11,6 +13,8 @@ namespace MultiplayerSDK.WebRequests
     {
         private const string BaseUri = "https://demo.skillcade.com";
         private const string MediaTypeJson = "application/json";
+
+        [Inject] private readonly TestMessagingManager _messagingManager;
 
         public async Task SendWinner(string matchId, string winnerId)
         {
@@ -31,12 +35,15 @@ namespace MultiplayerSDK.WebRequests
             };
 
             Debug.Log($"[WebRequester] Sending winner request, match id: {matchId}, winnerId: {winnerId}");
+            _messagingManager.SendMessageToClients($"Sending winner request, match id: {matchId}, winnerId: {winnerId}");
             
             try
             {
                 using var jsonContent = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, MediaTypeJson);
                 using var response = await httpClient.PostAsync($"api/playing-game/{matchId}/choose-winner", jsonContent);
 
+                _messagingManager.SendMessageToClients($"Set winner result: {response.StatusCode} - {response.ReasonPhrase}");
+                Debug.Log($"[WebRequester] choose winner response status: {response.StatusCode} - {response.ReasonPhrase}");
                 response.EnsureSuccessStatusCode();
                 
                 var responseString = await response.Content.ReadAsStringAsync();

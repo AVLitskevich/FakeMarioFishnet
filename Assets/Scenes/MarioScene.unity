@@ -1006,6 +1006,106 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09455fc3cfd84585b54fc45ceb95a8db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &336648317
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 336648320}
+  - component: {fileID: 336648319}
+  - component: {fileID: 336648318}
+  m_Layer: 0
+  m_Name: TestMessagingManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &336648318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 336648317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed8681f92f3f48cb80ea2b6b0b55c2f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 336648319}
+  _networkObjectCache: {fileID: 0}
+--- !u!114 &336648319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 336648317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <IsNested>k__BackingField: 0
+  WasActiveDuringEdit: 1
+  WasActiveDuringEdit_Set1: 1
+  <ComponentIndex>k__BackingField: 0
+  <PredictedSpawn>k__BackingField: {fileID: 0}
+  <PredictedOwner>k__BackingField: {fileID: 0}
+  NetworkBehaviours: []
+  InitializedParentNetworkBehaviour: {fileID: 0}
+  InitializedNestedNetworkObjects: []
+  RuntimeParentNetworkBehaviour: {fileID: 0}
+  RuntimeChildNetworkBehaviours: []
+  _isNetworked: 1
+  _isSpawnable: 1
+  _isGlobal: 0
+  _initializeOrder: 0
+  _preventDespawnOnDisconnect: 0
+  _defaultDespawnType: 0
+  NetworkObserver: {fileID: 0}
+  _enablePrediction: 0
+  _predictionType: 0
+  _graphicalObject: {fileID: 0}
+  _detachGraphicalObject: 0
+  _enableStateForwarding: 1
+  _networkTransform: {fileID: 0}
+  _ownerInterpolation: 1
+  _ownerSmoothedProperties: 255
+  _adaptiveInterpolation: 3
+  _spectatorSmoothedProperties: 255
+  _spectatorInterpolation: 2
+  _enableTeleport: 0
+  _teleportThreshold: 1
+  <PrefabId>k__BackingField: 65535
+  <SpawnableCollectionId>k__BackingField: 0
+  <AssetPathHash>k__BackingField: 0
+  <SceneId>k__BackingField: 3751263997
+  SerializedTransformProperties:
+    Position: {x: 0, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0, w: 0}
+    Scale: {x: 0, y: 0, z: 0}
+    IsValid: 0
+--- !u!4 &336648320
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 336648317}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &340687543 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7637677181527799487, guid: e8e61dccb0075414b9254ff6a21e59d0, type: 3}
@@ -21792,7 +21892,7 @@ MonoBehaviour:
   _dedicatedServerMode: 2
   _webGlMode: 1
   _connectionMode: 0
-  _config: {fileID: 11400000, guid: 4005b0ff013f89644a5e23e586d77277, type: 2}
+  _config: {fileID: 11400000, guid: 2223c51cd654d2f45bda69a099d93556, type: 2}
   _networkManager: {fileID: 1028377064}
   _startServerButton: {fileID: 1734752909}
   _connectButton: {fileID: 40239264}
@@ -23176,6 +23276,7 @@ MonoBehaviour:
   _finishLine: {fileID: 1543381764}
   _playerSpawner: {fileID: 1514232422}
   _stateMachine: {fileID: 1413283667}
+  _messagingManager: {fileID: 336648318}
 --- !u!1 &1732856133
 GameObject:
   m_ObjectHideFlags: 0
@@ -59637,6 +59738,7 @@ SceneRoots:
   - {fileID: 800223464}
   - {fileID: 1413283668}
   - {fileID: 1514232423}
+  - {fileID: 336648320}
   - {fileID: 1094266367}
   - {fileID: 695537748}
   - {fileID: 1090199442}
