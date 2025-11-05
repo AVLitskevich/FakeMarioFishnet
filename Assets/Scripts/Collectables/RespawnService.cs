@@ -1,27 +1,21 @@
 using System.Collections.Generic;
 using FishNet.Object;
+using UnityEngine;
 using VContainer;
 
 namespace DefaultNamespace.Collectables
 {
-    public class RespawnService : NetworkBehaviour
+    public class RespawnService
     {
         [Inject] private IReadOnlyList<ISpawnService> _spawnServices;
         
-        public void Initialize(IReadOnlyList<ISpawnService> spawnServices)
-        {
-            _spawnServices = spawnServices;
-        }
-
         [Server]
         public void RespawnAll()
         {
-            if (!IsServerInitialized) return;
-
             foreach (var spawner in _spawnServices)
             {
                 spawner.Respawn();
-            }
+            }   
         }
     }
 }

@@ -9,7 +9,6 @@ namespace DefaultNamespace.Collectables
         private struct SpawnPoint
         {
             public NetworkObject Prefab;
-            public Transform Parent;
             public Vector3 LocalPosition;
             public Quaternion LocalRotation;
         }
@@ -26,7 +25,7 @@ namespace DefaultNamespace.Collectables
         {
             _spawnPoints.Clear();
 
-            var collectables = FindObjectsByType<CollectableBase>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            var collectables = FindObjectsByType<CollectableBase>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
             foreach (var c in collectables)
             {
@@ -38,7 +37,6 @@ namespace DefaultNamespace.Collectables
                 _spawnPoints.Add(new SpawnPoint
                 {
                     Prefab = c.RespawnPrefab,
-                    Parent = c.transform.parent,
                     LocalPosition = c.transform.localPosition,
                     LocalRotation = c.transform.localRotation
                 });
@@ -77,7 +75,7 @@ namespace DefaultNamespace.Collectables
                     continue;
                 }
 
-                var instance = Instantiate(point.Prefab, point.Parent);
+                var instance = Instantiate(point.Prefab);
                 instance.transform.localPosition = point.LocalPosition;
                 instance.transform.localRotation = point.LocalRotation;
 
