@@ -123,17 +123,12 @@ namespace Game.StateMachine.States
             _gameUi.WaitForPlayersPanel.SetReadyState(readyPlayers, _playerDataService.PlayerData.Count, localReady);
         }
 
-        private void OnReadyStateChanged(bool isReady, string nickname)
+        private void OnReadyStateChanged(bool isReady)
         {
             if (!_playerDataService.TryGetLocalClientData(out var data))
                 return;
             
-            // if (!string.IsNullOrWhiteSpace(nickname))
-            //     data.Nickname = nickname;
-            
             _playerDataService.SetDataOnLocalClient(data.WithIsReady(isReady));
-            
-            
         }
     }
 }
