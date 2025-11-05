@@ -1,4 +1,5 @@
-﻿using Game.GUI;
+﻿using DefaultNamespace.Collectables;
+using Game.GUI;
 using MultiplayerSDK.FishNetAdapter;
 using MultiplayerSDK.StateMachine;
 using MultiplayerSDK.WebRequests;
@@ -35,6 +36,7 @@ namespace Game.StateMachine.States
         [Inject] private readonly PlayerSpawner _playerSpawner;
         [Inject] private readonly FishNetPlayerDataService _playerDataService;
 
+
         private float _timer;
 
         protected override void OnEnter(GameStateType prevState, FinishedStateData data)
@@ -60,6 +62,8 @@ namespace Game.StateMachine.States
             base.OnExit(nextState);
             if (IsClient)
                 _gameUi.FinishedPanel.gameObject.SetActive(false);
+
+            
         }
 
         public override void Update()

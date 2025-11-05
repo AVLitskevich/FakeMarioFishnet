@@ -1,6 +1,8 @@
-﻿using Game.GUI;
+﻿using DefaultNamespace.Collectables;
+using Game.GUI;
 using Game.Level;
 using MultiplayerSDK.StateMachine;
+using UnityEngine;
 using VContainer;
 
 namespace Game.StateMachine.States
@@ -12,6 +14,8 @@ namespace Game.StateMachine.States
         [Inject] private readonly GameUi _gameUi;
         [Inject] private readonly FinishLine _finishLine;
         [Inject] private readonly PlayerSpawner _playerSpawner;
+        [Inject] private readonly RespawnService _respawnService;
+
 
         public override void OnEnter(GameStateType prevState)
         {
@@ -24,6 +28,8 @@ namespace Game.StateMachine.States
             {
                 _playerSpawner.SpawnAllInGamePlayers();
                 _finishLine.OnPlayerReachedFinish += OnPlayerFinished;
+                Debug.Log("RespawnAll called");
+                _respawnService.RespawnAll();
             }
         }
 

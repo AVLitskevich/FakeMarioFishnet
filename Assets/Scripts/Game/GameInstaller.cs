@@ -1,4 +1,6 @@
-﻿using Game.GUI;
+﻿using System.Collections.Generic;
+using DefaultNamespace.Collectables;
+using Game.GUI;
 using Game.Level;
 using Game.StateMachine;
 using Game.StateMachine.States;
@@ -15,7 +17,7 @@ namespace Game
         [SerializeField] private FinishLine _finishLine;
         [SerializeField] private PlayerSpawner _playerSpawner;
         [SerializeField] private GameStateMachine _stateMachine;
-        [SerializeField] private TestMessagingManager _messagingManager;
+        [SerializeField] private CollectablesRespawnService _collectablesRespawnService;        [SerializeField] private TestMessagingManager _messagingManager;
         
         public override void Install(IContainerBuilder builder)
         {
@@ -25,11 +27,12 @@ namespace Game
             builder.RegisterInstance(_stateMachine);
             builder.RegisterInstance(_playerSpawner);
             builder.RegisterInstance(_messagingManager);
-
+            builder.RegisterInstance(_collectablesRespawnService).AsImplementedInterfaces();
             builder.Register<WaitForPlayersState>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<CountdownState>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<RunningState>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<FinishedState>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<RespawnService>(Lifetime.Singleton);
         }
     }
 }

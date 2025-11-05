@@ -115,6 +115,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 890865572886444992}
   _inputReader: {fileID: 4785572566629901107}
   _playerMovementConfig: {fileID: 11400000, guid: 13dcf7b23d5d25b489e33bb3ce163f55, type: 2}
+  _collider: {fileID: 2247135605099600173}
 --- !u!50 &890865572886444992
 Rigidbody2D:
   serializedVersion: 5
@@ -276,6 +277,8 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 4944023266038734634}
   _networkObjectCache: {fileID: 0}
+  _movement: {fileID: 8866073289841078330}
+  _collector: {fileID: 6550249093487379794}
 --- !u!1001 &2000453477535913599
 PrefabInstance:
   m_ObjectHideFlags: 0

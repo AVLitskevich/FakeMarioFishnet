@@ -132,6 +132,8 @@ namespace Game.StateMachine.States
             //     data.Nickname = nickname;
             
             _playerDataService.SetDataOnLocalClient(data.WithIsReady(isReady));
+            
+            
         }
     }
 }
