@@ -68,6 +68,7 @@ namespace Game.Player
         [SerializeField] private Rigidbody2D _rigidbody;
         [SerializeField] private PlayerInputReader _inputReader;
         [SerializeField] private PlayerMovementConfig _playerMovementConfig;
+        [SerializeField] private Collider2D _collider;
 
         [Inject] private readonly GameStateMachine _gameStateMachine;
         
@@ -105,6 +106,7 @@ namespace Game.Player
                 return default;
 
             var input = new PlayerInput { Movement = _inputReader.Movement, Jump = _inputReader.Jump };
+            
             _inputReader.ClearInput();
             return input;
         }
@@ -124,10 +126,11 @@ namespace Game.Player
             }
             
             float dt = (float)TimeManager.TickDelta;
-            UpdateGrounded();
 
             UpdateKnockback(dt);
             Move(input, state, dt);
+            
+            UpdateGrounded();
 
             if (IsGrounded)
                 _coyoteTimer = _playerMovementConfig._coyoteTime;
@@ -142,11 +145,7 @@ namespace Game.Player
 
         private void UpdateGrounded()
         {
-            IsGrounded = Physics2D.Raycast(
-                transform.position,
-                Vector2.down,
-                _playerMovementConfig._groundCheckDistance,
-                _playerMovementConfig._groundMask);
+            IsGrounded = _collider.IsTouchingLayers(_playerMovementConfig._groundMask);
         }
 
         private void UpdateKnockback(float dt)
@@ -168,6 +167,7 @@ namespace Game.Player
             if (!CanMove)
                 input.Reset();
             
+            
             Vector2 currentVelocity = _rigidbody.linearVelocity;
             if (Mathf.Abs(input.Movement) > 0.01f)
             {
@@ -185,7 +185,9 @@ namespace Game.Player
             }
 
             if (input.Jump && (IsGrounded || _coyoteTimer > 0f))
+            {
                 Jump(state);
+            }
         }
 
         private void CapFallVelocity()
@@ -241,6 +243,7 @@ namespace Game.Player
             }
 
             _predictionRigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            IsGrounded = false;
         }
         
         public void TakeDamage(ObstacleController obstacleController)
