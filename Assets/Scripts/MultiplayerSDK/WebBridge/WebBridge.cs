@@ -18,8 +18,13 @@ public class WebBridge : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void ConnectedToServer();
 
+    [SerializeField] private bool _sendMessages;
+
     public void TriggerLoaded()
     {
+        if (!_sendMessages)
+            return;
+        
         Debug.Log("Trigger GameLoaded");
 #if UNITY_WEBGL && !UNITY_EDITOR
         GameLoaded();
@@ -28,6 +33,9 @@ public class WebBridge : MonoBehaviour
 
     public void TriggerConnected()
     {
+        if (!_sendMessages)
+            return;
+
         Debug.Log("Trigger ConnectedToServer");
 #if UNITY_WEBGL && !UNITY_EDITOR
         ConnectedToServer();

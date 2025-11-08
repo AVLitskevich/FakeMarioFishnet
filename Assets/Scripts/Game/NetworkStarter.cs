@@ -15,7 +15,7 @@ namespace Game
 
         protected override void InitManualConnection()
         {
-#if UNITY_WEBGL
+#if UNITY_WEBGL && !UNITY_EDITOR
             _startServerButton.gameObject.SetActive(false);
 #endif
             _inGamePanel.SetActive(false);
