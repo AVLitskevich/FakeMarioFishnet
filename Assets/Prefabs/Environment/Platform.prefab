@@ -100,18 +100,18 @@ MonoBehaviour:
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
-  _enablePrediction: 1
+  _enablePrediction: 0
   _predictionType: 2
-  _graphicalObject: {fileID: 0}
+  _graphicalObject: {fileID: 1551337445953160360}
   _detachGraphicalObject: 1
   _enableStateForwarding: 1
   _networkTransform: {fileID: 0}
-  _ownerInterpolation: 1
+  _ownerInterpolation: 4
   _ownerSmoothedProperties: 255
   _adaptiveInterpolation: 6
   _spectatorSmoothedProperties: 255
   _spectatorInterpolation: 2
-  _enableTeleport: 1
+  _enableTeleport: 0
   _teleportThreshold: 1
   <PrefabId>k__BackingField: 65535
   <SpawnableCollectionId>k__BackingField: 0

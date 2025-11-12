@@ -29,16 +29,8 @@ namespace MultiplayerSDK.StateMachine
         void INetworkState<TStateType>.SetStateMachine(NetworkStateMachine<TStateType> stateMachine) => StateMachine = stateMachine;
         void INetworkState<TStateType>.CleanupStateMachine() => StateMachine = null;
 
-        public virtual void OnEnter(TStateType prevState)
-        {
-            Debug.Log($"[NetworkState] Enter state: {Type}, previous state: {prevState}");
-        }
-
-        public virtual void OnExit(TStateType nextState)
-        {
-            Debug.Log($"[NetworkState] Exit state: {Type}, next state: {nextState}");
-        }
-        
+        public virtual void OnEnter(TStateType prevState) { }
+        public virtual void OnExit(TStateType nextState) { }
         public virtual void OnEnterWithData(TStateType prevState, string data) { }
         
         public virtual void Update() { }
@@ -54,7 +46,6 @@ namespace MultiplayerSDK.StateMachine
 
         public sealed override void OnEnterWithData(TStateType prevState, string data)
         {
-            Debug.Log($"[NetworkState] Enter state: {Type}, data: {data}");
             TDataType typedData = JsonConvert.DeserializeObject<TDataType>(data);
             OnEnter(prevState, typedData);
         }

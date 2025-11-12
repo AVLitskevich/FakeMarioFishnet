@@ -24,6 +24,9 @@ namespace Game.StateMachine
 
         private void OnPlayerRemoved(int clientId, PlayerData playerData)
         {
+            if (!IsServerInitialized)
+                return;
+                
             int inGamePlayers = 0;
             int winnerId = -1;
             foreach (var entry in _playerDataService.PlayerData)

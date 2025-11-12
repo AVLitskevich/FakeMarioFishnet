@@ -17,7 +17,7 @@ namespace Game
         [SerializeField] private FinishLine _finishLine;
         [SerializeField] private PlayerSpawner _playerSpawner;
         [SerializeField] private GameStateMachine _stateMachine;
-        [SerializeField] private CollectablesRespawnService _collectablesRespawnService;
+        [SerializeField] private CollectablesRespawnService _collectablesRespawnService;        [SerializeField] private TestMessagingManager _messagingManager;
         
         public override void Install(IContainerBuilder builder)
         {
@@ -26,8 +26,8 @@ namespace Game
             builder.RegisterInstance(_finishLine);
             builder.RegisterInstance(_stateMachine);
             builder.RegisterInstance(_playerSpawner);
-            builder.RegisterInstance(_collectablesRespawnService).As<ISpawnService>();
-
+            builder.RegisterInstance(_messagingManager);
+            builder.RegisterInstance(_collectablesRespawnService).AsImplementedInterfaces();
             builder.Register<WaitForPlayersState>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<CountdownState>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<RunningState>(Lifetime.Singleton).AsImplementedInterfaces();

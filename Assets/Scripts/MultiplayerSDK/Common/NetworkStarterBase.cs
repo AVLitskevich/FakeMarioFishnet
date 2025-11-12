@@ -39,15 +39,9 @@ namespace MultiplayerSDK.Common
 #endif
 
             if (_connectionMode != ConnectionMode.None)
-            {
-                Debug.Log($"[NetworkStarterBase] Wait and auto start connection: {_connectionMode}");
                 StartCoroutine(WaitAndStart());
-            }
             else
-            {
-                Debug.Log($"[NetworkStarterBase] Auto start is {_connectionMode}, init manual");
                 InitManualConnection();
-            }
         }
         
         protected virtual void InitManualConnection() { }
@@ -57,7 +51,6 @@ namespace MultiplayerSDK.Common
         {
             yield return null;
 
-            Debug.Log($"[NetworkStarterBase] Auto start connection: {_connectionMode}");
             if (_connectionMode == ConnectionMode.Server)
                 StartServer();
             else if (_connectionMode == ConnectionMode.Client)

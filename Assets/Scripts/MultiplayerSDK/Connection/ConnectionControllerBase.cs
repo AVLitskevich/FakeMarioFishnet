@@ -82,16 +82,13 @@ namespace MultiplayerSDK.Connection
 
         private void OnTransportConnected()
         {
-            Debug.Log("[ConnectionControllerBase] On transport connected");
             if (Transport.IsServer)
             {
-                Debug.Log("[ConnectionControllerBase] Server started");
                 SetState(ConnectionState.Hosting);
             }
             else if (Transport.IsClient)
             {
                 _reconnectAttempts = 0;
-                Debug.Log("[ConnectionControllerBase] Connected to server");
                 SetState(ConnectionState.Connected);
             }
         }

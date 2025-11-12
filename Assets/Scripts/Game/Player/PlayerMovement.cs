@@ -63,6 +63,7 @@ namespace Game.Player
         
         public PlayerMovementConfig Config => _playerMovementConfig;
         
+        public RuntimeMoveValues MoveValues { get; set; }
         public bool IsGrounded { get; private set; }
 
         [SerializeField] private Rigidbody2D _rigidbody;
@@ -72,21 +73,19 @@ namespace Game.Player
 
         [Inject] private readonly GameStateMachine _gameStateMachine;
         
-        private PredictionRigidbody2D _predictionRigidbody;
+        // private PredictionRigidbody2D _predictionRigidbody;
 
         private float _health;
         private float _knockbackTimer;
         private float _coyoteTimer;
-        public RuntimeMoveValues MoveValues { get; set; }
-
 
         private PlayerInput _lastCreatedInput;
 
         public override void OnStartNetwork()
         {
             this.InjectToMe();
-            _predictionRigidbody = ObjectCaches<PredictionRigidbody2D>.Retrieve();
-            _predictionRigidbody.Initialize(_rigidbody);
+            // _predictionRigidbody = ObjectCaches<PredictionRigidbody2D>.Retrieve();
+            // _predictionRigidbody.Initialize(_rigidbody);
 
             _knockbackTimer = 0f;
             _health = _playerMovementConfig._maxHealth;
@@ -95,10 +94,10 @@ namespace Game.Player
         
         public override void OnStopNetwork()
         {
-            ObjectCaches<PredictionRigidbody2D>.StoreAndDefault(ref _predictionRigidbody);
+            // ObjectCaches<PredictionRigidbody2D>.StoreAndDefault(ref _predictionRigidbody);
         }
         
-        protected override void TimeManager_OnTick() => SimulateInputs(GetInput());
+        protected override void TimeManager_OnTick() => SimulateInputs(GetInput(), channel: Channel.Reliable);
 
         private PlayerInput GetInput()
         {
@@ -111,10 +110,13 @@ namespace Game.Player
             return input;
         }
         
-        [Replicate]
+        // [Replicate]
         // ReSharper disable once UnusedParameter.Local
-        private void SimulateInputs(PlayerInput input, ReplicateState state = ReplicateState.Invalid, Channel channel = Channel.Unreliable)
+        private void SimulateInputs(PlayerInput input, ReplicateState state = ReplicateState.Invalid, Channel channel = Channel.Reliable)
         {
+            if (!IsOwner)
+                return;
+            
             if (state.IsFuture())
             {
                 if (_playerMovementConfig._predictInputs)
@@ -138,9 +140,9 @@ namespace Game.Player
                 _coyoteTimer -= (float)TimeManager.TickDelta;
 
             CapFallVelocity();
-
-            _predictionRigidbody.AddForce(Physics2D.gravity);
-            _predictionRigidbody.Simulate();
+            
+            // _predictionRigidbody.AddForce(Physics2D.gravity);
+            // _predictionRigidbody.Simulate();
         }
 
         private void UpdateGrounded()
@@ -156,7 +158,8 @@ namespace Game.Player
             }
             else if (_knockbackTimer <= 0f && _health <= 0f)
             {
-                _predictionRigidbody.Velocity(Vector2.zero);
+                _rigidbody.linearVelocity = Vector2.zero;
+                // _predictionRigidbody.Velocity(Vector2.zero);
                 _rigidbody.position = Vector2.zero;
                 _health = _playerMovementConfig._maxHealth;
             }
@@ -167,7 +170,6 @@ namespace Game.Player
             if (!CanMove)
                 input.Reset();
             
-            
             Vector2 currentVelocity = _rigidbody.linearVelocity;
             if (Mathf.Abs(input.Movement) > 0.01f)
             {
@@ -175,13 +177,15 @@ namespace Game.Player
 
                 float acceleration = IsGrounded ? _playerMovementConfig._groundAcceleration : _playerMovementConfig._airAcceleration;
                 float newX = Mathf.MoveTowards(currentVelocity.x, targetSpeed, acceleration * dt);
-                _predictionRigidbody.Velocity(new Vector2(newX, currentVelocity.y));
+                // _predictionRigidbody.Velocity(new Vector2(newX, currentVelocity.y));
+                _rigidbody.linearVelocity = new Vector2(newX, currentVelocity.y);
             }
             else
             {
                 float deceleration = IsGrounded ? _playerMovementConfig._groundDeceleration : _playerMovementConfig._airDeceleration;
                 float newX = Mathf.MoveTowards(currentVelocity.x, 0f, deceleration * dt);
-                _predictionRigidbody.Velocity(new Vector2(newX, currentVelocity.y));
+                // _predictionRigidbody.Velocity(new Vector2(newX, currentVelocity.y));
+                _rigidbody.linearVelocity = new Vector2(newX, currentVelocity.y);
             }
 
             if (input.Jump && (IsGrounded || _coyoteTimer > 0f))
@@ -196,38 +200,39 @@ namespace Game.Player
             if (velocity.y < -_playerMovementConfig._maxFallSpeed)
             {
                 velocity.y = -_playerMovementConfig._maxFallSpeed;
-                _predictionRigidbody.Velocity(velocity);
+                _rigidbody.linearVelocity = velocity;
+                // _predictionRigidbody.Velocity(velocity);
             }
         }
 
-        protected override void TimeManager_OnPostTick()
-        {
-            CreateReconcile();
-        }
+        // protected override void TimeManager_OnPostTick()
+        // {
+        //     CreateReconcile();
+        // }
 
-        public override void CreateReconcile()
-        {
-            PlayerState state = new PlayerState
-            {
-                Rigidbody = _predictionRigidbody,
-                KnockbackTimer = _knockbackTimer,
-                Health = _health,
-                CoyoteTimer = _coyoteTimer,
-                MoveValues = MoveValues,
-            };
-            ReconcileState(state);
-        }
-        
-        [Reconcile]
-        // ReSharper disable once UnusedParameter.Local
-        private void ReconcileState(PlayerState state, Channel channel = Channel.Unreliable)
-        {
-            _knockbackTimer = state.KnockbackTimer;
-            _health = state.Health;
-            _coyoteTimer = state.CoyoteTimer;
-            MoveValues = state.MoveValues;
-            _predictionRigidbody.Reconcile(state.Rigidbody);
-        }
+        // public override void CreateReconcile()
+        // {
+        //     PlayerState state = new PlayerState
+        //     {
+        //         Rigidbody = _predictionRigidbody,
+        //         KnockbackTimer = _knockbackTimer,
+        //         Health = _health,
+        //         CoyoteTimer = _coyoteTimer,
+        //         MoveValues = MoveValues,
+        //     };
+        //     ReconcileState(state, Channel.Reliable);
+        // }
+        //
+        // [Reconcile]
+        // // ReSharper disable once UnusedParameter.Local
+        // private void ReconcileState(PlayerState state, Channel channel = Channel.Reliable)
+        // {
+        //     _knockbackTimer = state.KnockbackTimer;
+        //     _health = state.Health;
+        //     _coyoteTimer = state.CoyoteTimer;
+        //     MoveValues = state.MoveValues;
+        //     _predictionRigidbody.Reconcile(state.Rigidbody);
+        // }
         
         private void Jump(ReplicateState state)
         {
@@ -242,7 +247,8 @@ namespace Game.Player
                 JumpFx?.Invoke();
             }
 
-            _predictionRigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            _rigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            // _predictionRigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             IsGrounded = false;
         }
         
