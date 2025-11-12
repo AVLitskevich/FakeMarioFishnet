@@ -7,7 +7,7 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/Scenes/MarioScene.unity
-    guid: 1d668b123f5dc4e4c8dd0e8cd153c62a
+    guid: f860da344554e6b428d5045e47fdb844
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 39ecac73840be2742a33af07e0eb4d8e, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
