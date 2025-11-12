@@ -63,7 +63,7 @@ namespace MultiplayerSDK.FishNetAdapter
             }
         }
 
-        public void StartClient(ConnectionConfig config)
+        public void StartClient(ConnectionData config)
         {
             var port = config.UseEncryption ? config.WssConnectPort : config.ServerListenPort;
 
@@ -76,7 +76,7 @@ namespace MultiplayerSDK.FishNetAdapter
             _networkManager.ClientManager.StartConnection();
         }
 
-        public void StartServer(ConnectionConfig config)
+        public void StartServer(ConnectionData config)
         {
             Debug.Log($"[FishNetTransportAdapter] Starting server at port {config.ServerListenPort}");
             _transport.SetPort(config.ServerListenPort);

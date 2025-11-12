@@ -10,7 +10,7 @@ namespace MultiplayerSDK.Connection
         public event Action<DisconnectionReason> OnDisconnected;
         
         public ConnectionState ConnectionState { get; private set; }
-        public ConnectionConfig ActiveConfig { get; private set; }
+        public ConnectionData ActiveConfig { get; private set; }
         public abstract ITransportAdapter Transport { get; }
 
         private int _reconnectAttempts;
@@ -23,7 +23,7 @@ namespace MultiplayerSDK.Connection
             Transport.OnDisconnected += OnTransportDisconnected;
         }
 
-        public void StartServer(ConnectionConfig config)
+        public void StartServer(ConnectionData config)
         {
             if (ConnectionState != ConnectionState.Disconnected)
             {
@@ -44,7 +44,7 @@ namespace MultiplayerSDK.Connection
             Transport.StartServer(config);
         }
 
-        public void StartClient(ConnectionConfig config)
+        public void StartClient(ConnectionData config)
         {
             if (ConnectionState != ConnectionState.Disconnected)
             {

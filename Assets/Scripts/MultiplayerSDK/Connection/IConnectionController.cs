@@ -8,10 +8,10 @@ namespace MultiplayerSDK.Connection
         event Action<DisconnectionReason> OnDisconnected;
         
         ConnectionState ConnectionState { get; }
-        ConnectionConfig ActiveConfig { get; }
+        ConnectionData ActiveConfig { get; }
 
-        void StartServer(ConnectionConfig config);
-        void StartClient(ConnectionConfig config);
+        void StartServer(ConnectionData config);
+        void StartClient(ConnectionData config);
         void Disconnect();
     }
 }

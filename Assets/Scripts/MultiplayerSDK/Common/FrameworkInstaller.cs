@@ -4,6 +4,10 @@ using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
+#if !UNITY_WEBGL
+using MultiplayerSDK.GameLift;
+#endif
+
 namespace MultiplayerSDK.Common
 {
     public class FrameworkInstaller : MonoInstaller
@@ -15,6 +19,9 @@ namespace MultiplayerSDK.Common
         {
             builder.RegisterEntryPoint<ContainerSingletonWrapper>();
             builder.RegisterEntryPoint<GlobalGameDataController>();
+#if !UNITY_WEBGL
+            builder.RegisterEntryPoint<GameLiftInitializer>();
+#endif
             builder.Register<GlobalGameData>(Lifetime.Singleton);
             
             builder.Register<WebRequester>(Lifetime.Singleton);

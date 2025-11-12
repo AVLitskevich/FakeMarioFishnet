@@ -38,9 +38,9 @@ namespace MultiplayerSDK.FishNetAdapter
                 SetDataOnLocalClient(new PlayerData
                 {
                     IsReady = false,
-                    Nickname = _globalGameData.Nickname,
-                    UserId = _globalGameData.PlayerId,
-                    MatchId = _globalGameData.MatchId,
+                    Nickname = _globalGameData.Payload.Nickname,
+                    UserId = _globalGameData.Payload.PlayerId,
+                    MatchId = _globalGameData.Payload.MatchId,
                 });
             }
         }

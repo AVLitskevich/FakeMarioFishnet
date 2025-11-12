@@ -13,5 +13,14 @@ namespace MultiplayerSDK.WebBridge
         
         [JsonProperty("playerId")]
         public string PlayerId;
+        
+        [JsonProperty("connectIp")]
+        public string ConnectIp;
+        
+        [JsonProperty("port")]
+        public ushort Port;
+        
+        [JsonProperty("serverName")]
+        public string ServerName;
     }
 }

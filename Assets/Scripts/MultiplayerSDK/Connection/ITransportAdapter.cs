@@ -11,8 +11,8 @@ namespace MultiplayerSDK.Connection
         bool IsServer { get; }
         bool IsClient { get; }
         
-        void StartServer(ConnectionConfig config);
-        void StartClient(ConnectionConfig config);
+        void StartServer(ConnectionData config);
+        void StartClient(ConnectionData config);
         void Disconnect();
     }
 }

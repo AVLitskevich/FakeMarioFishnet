@@ -33,9 +33,7 @@ namespace MultiplayerSDK.Common
             }
             else
             {
-                _globalGameData.MatchId = payload.MatchId;
-                _globalGameData.Nickname = payload.Nickname;
-                _globalGameData.PlayerId = payload.PlayerId;
+                _globalGameData.Payload = payload;
             }
         }
 

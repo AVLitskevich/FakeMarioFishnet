@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using MultiplayerSDK.Connection;
+using MultiplayerSDK.WebBridge;
 using UnityEngine;
 using VContainer;
 
@@ -23,6 +24,10 @@ namespace MultiplayerSDK.Common
         [SerializeField] private ConnectionConfig _config;
 
         [Inject] private readonly IConnectionController _connectionController;
+        [Inject] private readonly GlobalGameData _globalGameData;
+        [Inject] private readonly global::WebBridge _webBridge;
+
+        private ConnectionData _data;
         
         private void Start()
         {
@@ -31,6 +36,8 @@ namespace MultiplayerSDK.Common
                 Debug.LogError("[NetworkStarterBase] Config is null");
                 return;
             }
+
+            _data = _config.GetData();
             
 #if !UNITY_EDITOR && UNITY_SERVER
             _connectionMode = _dedicatedServerMode;
@@ -38,34 +45,86 @@ namespace MultiplayerSDK.Common
             _connectionMode = _webGlMode;
 #endif
 
-            if (_connectionMode != ConnectionMode.None)
-                StartCoroutine(WaitAndStart());
+            if (_connectionMode == ConnectionMode.Server)
+                StartCoroutine(WaitAndStart(_connectionMode));
+            else if (_connectionMode == ConnectionMode.Client)
+                InitAutoConnectionToServer();
             else
                 InitManualConnection();
         }
-        
+
+        private void OnDestroy()
+        {
+            _webBridge.OnPayloadReceived -= SetupPayloadAndConnectToServer;
+        }
+
         protected virtual void InitManualConnection() { }
         protected virtual void OnConnectionStarted(ConnectionMode mode) { }
 
-        private IEnumerator WaitAndStart()
+        private void InitAutoConnectionToServer()
+        {
+            if (_globalGameData.Payload != null)
+            {
+                Debug.Log("[NetworkStarterBase] Got payload on start");
+                SetupPayloadAndConnectToServer(_globalGameData.Payload);
+            }
+            else
+            {
+                Debug.Log("[NetworkStarterBase] Subscribe to payload update");
+                _webBridge.OnPayloadReceived += SetupPayloadAndConnectToServer;
+            }
+        }
+
+        private void SetupPayloadAndConnectToServer(WebPayload payload)
+        {
+            Debug.Log("[NetworkStarterBase] Setup payload");
+            _webBridge.OnPayloadReceived -= SetupPayloadAndConnectToServer;
+            if (string.IsNullOrEmpty(payload.ConnectIp))
+            {
+                Debug.LogError("[NetworkStarterBase] Payload connect ip is null");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(payload.ServerName))
+            {
+                Debug.LogError("[NetworkStarterBase] Payload server name is null");
+                return;
+            }
+
+            if (payload.Port == 0)
+            {
+                Debug.LogError("[NetworkStarterBase] Payload port is 0");
+                return;
+            }
+            
+            _data.ServerAddress = payload.ConnectIp;
+            _data.WssConnectPort = payload.Port;
+            _data.WssServerName = payload.ServerName;
+            _data.UseEncryption = true;
+
+            Debug.Log($"[NetworkStarterBase] Start connection with payload, ip: {payload.ConnectIp}, port: {payload.Port}, server name: {payload.ServerName}");
+            StartCoroutine(WaitAndStart(ConnectionMode.Client));
+        }
+
+        private IEnumerator WaitAndStart(ConnectionMode connectionMode)
         {
             yield return null;
 
-            if (_connectionMode == ConnectionMode.Server)
+            if (connectionMode == ConnectionMode.Server)
                 StartServer();
-            else if (_connectionMode == ConnectionMode.Client)
+            else if (connectionMode == ConnectionMode.Client)
                 StartClient();
         }
 
         protected void StartServer()
         {
-            _connectionController.StartServer(_config);
+            _connectionController.StartServer(_data);
             OnConnectionStarted(ConnectionMode.Server);
         }
 
         protected void StartClient()
         {
-            _connectionController.StartClient(_config);
+            _connectionController.StartClient(_data);
             OnConnectionStarted(ConnectionMode.Client);
         }
     }

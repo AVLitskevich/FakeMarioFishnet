@@ -1,9 +1,9 @@
-﻿namespace MultiplayerSDK.Common
+﻿using MultiplayerSDK.WebBridge;
+
+namespace MultiplayerSDK.Common
 {
     public class GlobalGameData
     {
-        public string MatchId;
-        public string Nickname;
-        public string PlayerId;
+        public WebPayload Payload;
     }
 }

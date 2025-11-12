@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "com.alven.fishnet.unitytransport": "https://github.com/ooonush/FishyUnityTransport.git?path=Assets/FishNet/Plugins/FishyUnityTransport",
+    "com.amazonaws.gameliftserver.sdk": "file:D:/Projects/Skillcade/amazon-gamelift-plugin-unity/Out/com.amazonaws.gameliftserver.sdk-5.4.0.tgz",
     "com.firstgeargames.fishnet": "https://github.com/FirstGearGames/FishNet.git?path=Assets/FishNet",
     "com.unity.cinemachine": "3.1.4",
     "com.unity.collab-proxy": "2.9.2",

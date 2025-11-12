@@ -13,5 +13,19 @@ namespace MultiplayerSDK.Connection
 
         [SerializeField] public float ReconnectDelay;
         [SerializeField] public int ReconnectAttempts;
+
+        public ConnectionData GetData()
+        {
+            return new ConnectionData
+            {
+                ServerAddress = ServerAddress,
+                ServerListenPort = ServerListenPort,
+                WssServerName = WssServerName,
+                WssConnectPort = WssConnectPort,
+                UseEncryption = UseEncryption,
+                ReconnectDelay = ReconnectDelay,
+                ReconnectAttempts = ReconnectAttempts,
+            };
+        }
     }
 }
