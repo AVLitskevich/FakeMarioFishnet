@@ -35,12 +35,15 @@ namespace MultiplayerSDK.FishNetAdapter
             }
             else if (IsClientInitialized)
             {
+                string nickname = _globalGameData.Payload?.Nickname ?? $"Player {LocalPlayerId}";
+                string userId = _globalGameData.Payload?.PlayerId ?? "";
+                string matchId = _globalGameData.Payload?.MatchId ?? "";
                 SetDataOnLocalClient(new PlayerData
                 {
                     IsReady = false,
-                    Nickname = _globalGameData.Payload.Nickname,
-                    UserId = _globalGameData.Payload.PlayerId,
-                    MatchId = _globalGameData.Payload.MatchId,
+                    Nickname = nickname,
+                    UserId = userId,
+                    MatchId = matchId,
                 });
             }
         }

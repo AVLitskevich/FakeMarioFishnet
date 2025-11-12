@@ -1765,7 +1765,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &301483425
 Transform:
   m_ObjectHideFlags: 0
@@ -3535,6 +3535,10 @@ PrefabInstance:
     - target: {fileID: 1032932084962159168, guid: 4400739d603442d4180922e02766a98b, type: 3}
       propertyPath: m_Name
       value: Platform
+      objectReference: {fileID: 0}
+    - target: {fileID: 1032932084962159168, guid: 4400739d603442d4180922e02766a98b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1064372259209348192, guid: 4400739d603442d4180922e02766a98b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5790,8 +5794,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _dedicatedServerMode: 2
   _webGlMode: 1
+  _clientConnectFromPayload: 0
   _connectionMode: 0
-  _config: {fileID: 11400000, guid: 4005b0ff013f89644a5e23e586d77277, type: 2}
+  _config: {fileID: 11400000, guid: 5fa8a9f51d08fac4eb687a64030b4d8e, type: 2}
   _networkManager: {fileID: 1028377064}
   _startServerButton: {fileID: 1734752909}
   _connectButton: {fileID: 40239264}

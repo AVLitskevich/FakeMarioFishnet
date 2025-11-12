@@ -18,6 +18,7 @@ namespace MultiplayerSDK.Common
         [Header("Platform auto connection settings")]
         [SerializeField] private ConnectionMode _dedicatedServerMode;
         [SerializeField] private ConnectionMode _webGlMode;
+        [SerializeField] private bool _clientConnectFromPayload;
         
         [Header("Default connection settings")]
         [SerializeField] private ConnectionMode _connectionMode;
@@ -46,11 +47,20 @@ namespace MultiplayerSDK.Common
 #endif
 
             if (_connectionMode == ConnectionMode.Server)
+            {
                 StartCoroutine(WaitAndStart(_connectionMode));
+            }
             else if (_connectionMode == ConnectionMode.Client)
-                InitAutoConnectionToServer();
+            {
+                if (_clientConnectFromPayload)
+                    InitAutoConnectionToServer();
+                else
+                    StartCoroutine(WaitAndStart(_connectionMode));
+            }
             else
+            {
                 InitManualConnection();
+            }
         }
 
         private void OnDestroy()
