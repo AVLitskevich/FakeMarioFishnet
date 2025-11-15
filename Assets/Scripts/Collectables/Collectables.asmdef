@@ -1,0 +1,17 @@
+{
+    "name": "Collectables",
+    "rootNamespace": "DefaultNamespace.Collectables",
+    "references": [
+        "FishNet.Runtime",
+        "VContainer"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
