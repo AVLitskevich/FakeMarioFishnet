@@ -10,7 +10,7 @@
       "hash": "08756d9733a556018041e52fcb9d2a6035346aeb"
     },
     "com.amazonaws.gameliftserver.sdk": {
-      "version": "file:D:/Projects/Skillcade/amazon-gamelift-plugin-unity/Out/com.amazonaws.gameliftserver.sdk-5.4.0.tgz",
+      "version": "file:D:/Projects/Skillcade/SkillcadeSDK/com.amazonaws.gameliftserver.sdk-5.4.0.tgz",
       "depth": 0,
       "source": "local-tarball",
       "dependencies": {

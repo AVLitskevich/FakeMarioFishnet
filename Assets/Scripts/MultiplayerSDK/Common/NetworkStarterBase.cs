@@ -110,7 +110,7 @@ namespace MultiplayerSDK.Common
             _data.ServerAddress = payload.ConnectIp;
             _data.WssConnectPort = payload.Port;
             _data.WssServerName = payload.ServerName;
-            _data.UseEncryption = true;
+            _data.UseEncryption = false;
 
             Debug.Log($"[NetworkStarterBase] Start connection with payload, ip: {payload.ConnectIp}, port: {payload.Port}, server name: {payload.ServerName}");
             StartCoroutine(WaitAndStart(ConnectionMode.Client));

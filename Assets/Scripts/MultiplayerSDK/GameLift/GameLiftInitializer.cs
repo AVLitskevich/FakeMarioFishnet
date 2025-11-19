@@ -1,29 +1,21 @@
-﻿#if !UNITY_WEBGL
-using System;
+﻿
+#if UNITY_SERVER
 using System.Collections.Generic;
 using Aws.GameLift.Server;
 using Aws.GameLift.Server.Model;
+#endif
 using MultiplayerSDK.Connection;
 using UnityEngine;
-using VContainer;
-using VContainer.Unity;
 
 namespace MultiplayerSDK.GameLift
 {
-    public class GameLiftInitializer : IInitializable, IDisposable
+    public class GameLiftInitializer : MonoBehaviour
     {
-        [Inject] private readonly IConnectionController _connectionController;
+        [SerializeField] private ConnectionConfig _config;
         
-        public void Initialize()
+#if UNITY_SERVER
+        private void Start()
         {
-            _connectionController.OnStateChanged += OnConnectionStateChanged;
-        }
-
-        private void OnConnectionStateChanged(ConnectionState state)
-        {
-            if (state != ConnectionState.Hosting)
-                return;
-
             Debug.Log("[GameLiftInitializer] Server connected, initializing game lift services");
             InitializeGameLiftServer();
         }
@@ -38,7 +30,6 @@ namespace MultiplayerSDK.GameLift
             }
 
             Debug.Log("[GameLiftInitializer] Sdk initialized");
-            
             var logFileNames = new List<string>
             {
                 "Local/game/logs/serverLog.txt"
@@ -47,7 +38,7 @@ namespace MultiplayerSDK.GameLift
                 OnUpdateSession,
                 OnProcessTerminate,
                 OnHealthCheck,
-                _connectionController.ActiveConfig.ServerListenPort,
+                _config.ServerListenPort,
                 new LogParameters(logFileNames));
             
             var processReadyResult = GameLiftServerAPI.ProcessReady(processParameters);
@@ -63,6 +54,7 @@ namespace MultiplayerSDK.GameLift
         private void OnStartSession(GameSession gameSession)
         {
             GameLiftServerAPI.ActivateGameSession();
+            GameLiftServerAPI.UpdatePlayerSessionCreationPolicy(PlayerSessionCreationPolicy.ACCEPT_ALL);
         }
 
         private void OnUpdateSession(UpdateGameSession updateGameSession)
@@ -78,11 +70,11 @@ namespace MultiplayerSDK.GameLift
         {
             return true;
         }
-
-        public void Dispose()
+        
+        private void OnDestroy()
         {
             GameLiftServerAPI.Destroy();
         }
+#endif
     }
 }
-#endif
