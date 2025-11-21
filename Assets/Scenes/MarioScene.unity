@@ -1765,7 +1765,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &301483425
 Transform:
   m_ObjectHideFlags: 0
@@ -2087,7 +2087,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7637677181527799487, guid: e8e61dccb0075414b9254ff6a21e59d0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -61.1
+      value: -78.8
       objectReference: {fileID: 0}
     - target: {fileID: 7637677181527799487, guid: e8e61dccb0075414b9254ff6a21e59d0, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3582,7 +3582,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3163456729119693188, guid: 4400739d603442d4180922e02766a98b, type: 3}
       propertyPath: WasActiveDuringEdit
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3163456729119693188, guid: 4400739d603442d4180922e02766a98b, type: 3}
       propertyPath: <SceneId>k__BackingField
@@ -5747,7 +5747,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d372188900cc43d799e45aae48724bef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sendMessages: 1
+  _sendMessages: 0
 --- !u!4 &888954193
 Transform:
   m_ObjectHideFlags: 0
@@ -5794,9 +5794,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _dedicatedServerMode: 2
   _webGlMode: 1
-  _clientConnectFromPayload: 1
+  _clientConnectFromPayload: 0
   _connectionMode: 0
-  _config: {fileID: 11400000, guid: 8471d1d5d9b0fc844837a7c2c0ad9566, type: 2}
+  _config: {fileID: 11400000, guid: 5fa8a9f51d08fac4eb687a64030b4d8e, type: 2}
   _networkManager: {fileID: 1028377064}
   _startServerButton: {fileID: 1734752909}
   _connectButton: {fileID: 40239264}
@@ -98935,7 +98935,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1579614470
 MonoBehaviour:
   m_ObjectHideFlags: 0
